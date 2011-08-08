@@ -3,3 +3,4 @@
 *.pyo
 .project
 .pydevproject
+data.db
