@@ -1,7 +1,7 @@
-##Scudbot introduction
+# Scudbot introduction
 
-Requires:
-+ Flask
-+ Twisted
-+ Flask-SQLAlchemy
+## Requires:
+* Flask
+* Twisted
+* Flask-SQLAlchemy
 
