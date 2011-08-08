@@ -1,12 +1,12 @@
 from twisted.words.protocols import irc
 from twisted.internet import protocol
-import sys
 from twisted.internet import reactor
 from twisted.web.wsgi import WSGIResource
 from twisted.web.server import Site
 
-from flaskext.sqlalchemy import SQLAlchemy, BaseQuery
-from flask import Flask, render_template, session, redirect, url_for, escape, request, g, abort, flash, Response, make_response
+from flaskext.sqlalchemy import SQLAlchemy
+from flask import Flask, render_template
+
 from datetime import datetime
 
 app = Flask(__name__)
@@ -16,6 +16,7 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///data.db'
 SQLALCHEMY_ECHO = True
 SECRET_KEY = 'asdkjad98a7sd8asd98h983h9732e2387ey682jhbd23jhb328o726387623987d62873dg23dgu2gdjh2g38327dto283d7t'
 DEBUG = True
+
 app.config.from_object(__name__) # load uppercase keys as config options.
 
 
