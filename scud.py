@@ -84,7 +84,7 @@ class MomBotFactory(protocol.ClientFactory):
 
 
 if __name__ == "__main__":
-    chan = "fortress.uk.ea"
-    reactor.connectTCP('irc.freenode.net', 6667, MomBotFactory('#' + chan,nickname="scudia"))
+    chan = "fortress.uk.scud"
+    reactor.connectTCP('uk.quakenet.org', 6667, MomBotFactory('#' + chan,nickname="scudia"))
     reactor.run()
-    app.run()
+#    app.run()
