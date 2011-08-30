@@ -16,4 +16,16 @@ class Message(Base):
         self.channel = channel
         
     def __repr__(self):
-        return "%s : %s" % (user, message,)
+        return "%s : %s" % (self.user, self.message,)
+    
+class Admin(Base):
+    __tablename__ = 'admin'
+    id = Column(Integer, primary_key=True)
+    user = Column(String(100))
+    date_created = Column(DateTime, default=datetime.now())
+    
+    def __init__(self, user):
+        self.user = user
+    
+    def __repr__(self):
+        return "<User: %s>" % (self.user,)
