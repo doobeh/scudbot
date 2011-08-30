@@ -1,7 +1,7 @@
 from twisted.words.protocols import irc
 from twisted.internet import protocol
 from database import db_session
-from model import Message
+from model import Message, Admin
 
 class ScudBot(irc.IRCClient):
     def _get_nickname(self):
@@ -18,6 +18,14 @@ class ScudBot(irc.IRCClient):
     def privmsg(self, user, channel, msg):
         if not user:
             return
+        
+        if msg.startswith('!%s' % self.nickname):
+            u = Admin.query.filter_by(user=user).first()
+            if u:
+                print "user %s sent command %s" % (user, msg,)
+            else:
+                print "user %s not authed for command %s" % (user, msg,)
+            
         m = Message(user, channel, msg)
         db_session.add(m)
         db_session.commit()

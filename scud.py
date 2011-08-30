@@ -6,7 +6,7 @@ from flask import Flask, render_template
 
 from bot.ScudBot import ScudBotFactory
 from database import db_session, init_db
-from model import Message
+from model import Message, Admin
 init_db()
 
 app = Flask(__name__)
@@ -21,6 +21,12 @@ def index():
     m = Message.query.all()
     return render_template('index.html',messages=m)
 
+@app.route("/dataload/")
+def dataload():
+    u = Admin("doobeh!~quassel@b33f.net")
+    db_session.add(u)
+    db_session.commit()
+    
 @app.teardown_request
 def shutdown_session(exception=None):
     db_session.remove()
