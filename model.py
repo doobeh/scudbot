@@ -29,3 +29,15 @@ class Admin(Base):
     
     def __repr__(self):
         return "<User: %s>" % (self.user,)
+    
+class Url(Base):
+    __tablename__ = 'url'
+    id = Column(Integer, primary_key=True)
+    url = Column(Text)
+    date_created = Column(DateTime, default=datetime.now())
+    
+    def __init__(self, url):
+        self.url = url
+        
+    def __repr__(self):
+        return "<URL: %s>" % (self.url,)
