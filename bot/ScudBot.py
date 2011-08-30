@@ -1,7 +1,7 @@
 from twisted.words.protocols import irc
 from twisted.internet import protocol
 from database import db_session
-from model import Message, Admin
+from model import Message, Admin, Url
 import re
 
 URL_PATTERN = re.compile(ur'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?\xab\xbb\u201c\u201d\u2018\u2019]))')
@@ -36,7 +36,7 @@ class ScudBot(irc.IRCClient):
         # Check and log URLS:
         urls = re.findall(URL_PATTERN,msg)
         for url in urls:
-            db_session.add(url[0])
+            db_session.add(Url(url[0]))
         db_session.commit()
         
         # Log all messages
