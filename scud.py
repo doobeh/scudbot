@@ -22,6 +22,11 @@ def index():
     m = Message.query.all()
     return render_template('index.html',messages=m)
 
+@app.route("/urls/")
+def urls():
+    u = Url.query.all()
+    return render_template('urls.html',urls=u)
+
 @app.route("/dataload/")
 def dataload():
     u = Admin("doobeh!~quassel@b33f.net")
