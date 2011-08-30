@@ -7,6 +7,7 @@ from flask import Flask, render_template
 from bot.ScudBot import ScudBotFactory
 from database import db_session, init_db
 from model import Message, Admin
+
 init_db()
 
 app = Flask(__name__)
