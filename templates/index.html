@@ -53,6 +53,22 @@
         <p><a class="btn primary large">Learn more &raquo;</a></p>
       </div>
 
+      <!-- Show any logged messages -->
+      <div class="row">
+      	<div class="span16">
+      		<h2>Messages</h2>
+      		{% if messages %}
+      			<ul>
+      			{% for message in messages %}
+      				<li>{{ message.user }} : {{ message.message }}</li>
+      			{% endfor %}
+      			</ul>
+      		{% else %}
+      			<p>There are currently no logged messages.</p>
+      		{% endif %}
+      	</div>      	
+      </div>
+      
       <!-- Example row of columns -->
       <div class="row">
         <div class="span6">
@@ -73,20 +89,7 @@
       </div>
       
       
-      <div class="row">
-      	<div class="span16">
-      		<h2>Messages</h2>
-      		{% if messages %}
-      			<ul>
-      			{% for message in messages %}
-      				<li>{{ message.user }} : {{ message.message }}</li>
-      			{% endfor %}
-      			</ul>
-      		{% else %}
-      			<p>There are currently no logged messages.</p>
-      		{% endif %}
-      	</div>      	
-      </div>
+      
 
       <footer>
         <p>&copy; Company 2011</p>
