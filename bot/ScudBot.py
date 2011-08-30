@@ -2,6 +2,9 @@ from twisted.words.protocols import irc
 from twisted.internet import protocol
 from database import db_session
 from model import Message, Admin
+import re
+
+URL_PATTERN = re.compile(ur'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?\xab\xbb\u201c\u201d\u2018\u2019]))')
 
 class ScudBot(irc.IRCClient):
     def _get_nickname(self):
@@ -14,22 +17,32 @@ class ScudBot(irc.IRCClient):
 
     def joined(self, channel):
         print "Joined %s." % (channel,)
+        print URL_PATTERN
 
     def privmsg(self, user, channel, msg):
+        
+        # Bot is talking to himself?
         if not user:
             return
         
+        # Run a command 
         if msg.startswith('!%s' % self.nickname):
             u = Admin.query.filter_by(user=user).first()
             if u:
                 print "user %s sent command %s" % (user, msg,)
             else:
                 print "user %s not authed for command %s" % (user, msg,)
-            
+        
+        # Check and log URLS:
+        urls = re.findall(URL_PATTERN,msg)
+        for url in urls:
+            db_session.add(url[0])
+        db_session.commit()
+        
+        # Log all messages
         m = Message(user, channel, msg)
         db_session.add(m)
         db_session.commit()
-        
 
 class ScudBotFactory(protocol.ClientFactory):
     protocol = ScudBot
