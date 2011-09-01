@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime
+from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean
 from database import Base
 from datetime import datetime
 
@@ -29,11 +29,20 @@ class Admin(Base):
     
     def __repr__(self):
         return "<User: %s>" % (self.user,)
-    
 class Url(Base):
     __tablename__ = 'url'
     id = Column(Integer, primary_key=True)
     url = Column(Text)
+    nick = Column(Text)
+    link = Column(Text)
+    channel = Column(Text)
+    title = Column(Text)
+    pageType = Column(Text)
+    linkType = Column(Text)
+    fileType = Column(Text)
+    imgCached = Column(Boolean)
+    imgThumb  = Column(Text)
+
     date_created = Column(DateTime, default=datetime.now())
     
     def __init__(self, url):
