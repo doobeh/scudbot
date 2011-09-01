@@ -82,7 +82,7 @@ def parse(message):
     
             #If the url doesn't start with http://, make it so
             link = link if link.find('http://') != -1 else 'http://' + link
-            sys.stdout.write("Querying: %s" % link)
+            sys.stdout.write("Querying: %s\n" % link)
             page = urllib2.urlopen(link)
             content_type = None
             content_len  = None
@@ -94,9 +94,9 @@ def parse(message):
                 elif header[:header.find(':')].lower() == 'content-length': 
                     content_len =  header[header.find(':')+1:].strip()
     
-            if content_len is None:
-                #If there is no content we cannot continue
-                return "No Content Length"
+            #if content_len is None:
+            #    #If there is no content we cannot continue
+            #    return "No Content Length"
             if content_type is None:        
                 #If there is no type it's malformed
                 return "No Content Type"
@@ -118,7 +118,7 @@ def parse(message):
             elif(re.search("image\/",content_type, re.I)):
                 findex = link.rfind('/')
                 if(findex == -1):
-                   sys.exit(0) 
+                   return "Unable to find link %s" %(link) 
                 fname = link[findex+1:]
                 src = re.sub('%20', '', fname)
                 dst = '/home/weigonchi/img/thumb/'+re.sub('(?P<grp>.*)\.(?:\w+)$','\g<grp>.png', fname, re.I)
@@ -143,6 +143,6 @@ def parse(message):
             pass
 
         #$inserter = $dbh->prepare("INSERT INTO linkage (nick, whence, link, channel, pgTitle, pgType, pgSize, ltype,pgfType,imgCached,imgThumb) VALUES (?,now(),?,?,?,?,?,?,?,?,?)");
-iurl = raw_input('URL: ')
-sys.stdout.write(parse(iurl))
-sys.stdout.write('\n')
+#iurl = raw_input('URL: ')
+#sys.stdout.write(parse(iurl))
+#sys.stdout.write('\n')
