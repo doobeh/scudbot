@@ -3,6 +3,7 @@ from twisted.internet import protocol
 from database import db_session
 from model import Message, Admin, Url
 import re
+from urlParser import parse
 
 
 URL_PATTERN = re.compile(ur'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?\xab\xbb\u201c\u201d\u2018\u2019]))')
@@ -34,7 +35,9 @@ class ScudBot(irc.IRCClient):
                 print "user %s sent command %s" % (user, msg,)
             else:
                 print "user %s not authed for command %s" % (user, msg,)
-        
+        print "Checking message: %s " % (msg)
+        print parse(msg)
+        print "Message Checked"
         # Check and log URLS:
         urls = re.findall(URL_PATTERN,msg)
         for url in urls:
