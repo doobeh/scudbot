@@ -1,14 +1,11 @@
 from twisted.words.protocols import irc
 from twisted.internet import protocol
 from database import db_session
-from model import Message, Admin, Url
+from model import Message, Admin
 import re
 from urlParser import parse
 
 
-URL_PATTERN = re.compile(ur'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?\xab\xbb\u201c\u201d\u2018\u2019]))')
-#Regex used previously, will probably use again for capture groups
-#prog = re.compile("(?P<link>(?:(?P<ltype>[a-z0-9]{2,15})\:\/\/)?(?:(?P<uname>[-_\w]+)\:?\w*@)?(?:(?P<domain>[\.\-_\w]*\.(?P<ptld>[a-z]{2,}))|(?P<ip>(?:(?:[01]?[0-9]{1,2}|2(?:[0-4][0-9]|5[0-5]))\.){3}(?:[01]?[0-9]{1,2}|2(?:[0-4][0-9]|5[0-5]))))(?:\:(?P<port>\d+))?\/?(?P<pathres>[\w\#\/\Q~:;,.?+=&%@!-\E]+)?)",re.I)
 class ScudBot(irc.IRCClient):
     def _get_nickname(self):
         return self.factory.nickname
@@ -20,7 +17,6 @@ class ScudBot(irc.IRCClient):
 
     def joined(self, channel):
         print "Joined %s." % (channel,)
-        print URL_PATTERN
 
     def privmsg(self, user, channel, msg):
         
@@ -38,11 +34,6 @@ class ScudBot(irc.IRCClient):
         print "Checking message: %s " % (msg)
         print parse(msg)
         print "Message Checked"
-        # Check and log URLS:
-        urls = re.findall(URL_PATTERN,msg)
-        for url in urls:
-            db_session.add(Url(url[0]))
-        db_session.commit()
         
         # Log all messages
         m = Message(user, channel, msg)

@@ -4,38 +4,53 @@ import Image
 import urllib2
 import mimetypes
 from tld import TLD
+from model import Url
+from database import db_session
 
-#link is the actual link/url
-#ltype is the type of link it is (http, direct connect, ftp, etc)
-#uname is the username if there is one for ftp, http, connections
-#ptld is the TLD (.co.uk, .com, etc)
-#ip is the ip address if any
-#pathres if the path after the domain www.blah.com/this/blah.txt has /this/blah.txt
-#gftype is the mime type (jpeg, mpeg, etc)
-#domain is the domain including tld
-#port if there is one after domain:
+#Lamda to return  None if the String is empty
+NoneAsEmpty = lambda x:None if not x else x
+
+#0 -link is the actual link/url
+#1 -ltype is the type of link it is (http, direct connect, ftp, etc)
+#2 -uname is the username if there is one for ftp, http, connections
+#3 -domain is the domain including tld
+#4 -ptld is the TLD (.co.uk, .com, etc)
+#5 -ip is the ip address if any
+#6 -port if there is one after domain:
+#7 -pathres if the path after the domain www.blah.com/this/blah.txt has /this/blah.txt
+## -gftype is the mime type (jpeg, mpeg, etc)
+
 def parse(message):
     prog = re.compile("(?P<link>(?:(?P<ltype>[a-z0-9]{2,15})\:\/\/)?(?:(?P<uname>[-_\w]+)\:?\w*@)?(?:(?P<domain>[\.\-_\w]*\.(?P<ptld>[a-z]{2,}))|(?P<ip>(?:(?:[01]?[0-9]{1,2}|2(?:[0-4][0-9]|5[0-5]))\.){3}(?:[01]?[0-9]{1,2}|2(?:[0-4][0-9]|5[0-5]))))(?:\:(?P<port>\d+))?\/?(?P<pathres>[\w\#\/\Q~:;,.?+=&%@!-\E]+)?)",re.I)
-    result = prog.search(message)
+    # Check and log URLS:
+    urls = re.findall(prog, message)
+    retStr = '';
+    for url in urls:
+        retStr += process(url)
+    return retStr
+        #db_session.add(Url(url[0]))
+#    db_session.commit()
+    
+def process(result):
     if result is None:
         return "No regexp match"
     
-    link = result.group('link')
+    link = NoneAsEmpty(result[0])
     #If the link is None, return None
     if link is None:
         return "No link in message"
     
-    ltype = result.group('ltype')
-    uname = result.group('uname')
-    domain = result.group('domain')
-    ptld = result.group('ptld')
-    ip = result.group('ip')
-    pathres = result.group('pathres')
+    ltype = NoneAsEmpty(result[1])
+    uname = NoneAsEmpty(result[2])
+    domain = NoneAsEmpty(result[3])
+    ptld = NoneAsEmpty(result[4])
+    ip = NoneAsEmpty(result[5])
     #Try and convert the port to an int
     try:
-        port = int(result.group('port'))
+        port = int(NoneAsEmpty(result[6]))
     except (ValueError, TypeError):
         port = None
+    pathres = NoneAsEmpty(result[7])
     
     #validate the TLD including if the TLD is actually real
     variable = TLD()
@@ -141,6 +156,7 @@ def parse(message):
             #Deal with HTTPError as per http://www.voidspace.org.uk/python/articles/urllib2.shtml#handling-exceptions
             print exc
             pass
+    return "None\n"
 
         #$inserter = $dbh->prepare("INSERT INTO linkage (nick, whence, link, channel, pgTitle, pgType, pgSize, ltype,pgfType,imgCached,imgThumb) VALUES (?,now(),?,?,?,?,?,?,?,?,?)");
 #iurl = raw_input('URL: ')
