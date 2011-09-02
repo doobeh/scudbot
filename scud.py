@@ -39,7 +39,7 @@ def shutdown_session(exception=None):
 
 resource = WSGIResource(reactor, reactor.getThreadPool(), app) # register app with reactor.
 site = Site(resource)
-reactor.listenTCP(8080, site)  # site will listen on local server at port 80
+reactor.listenTCP(8538, site)  # site will listen on local server at port 80
 
 if __name__ == "__main__":
     chan = "fortress.uk.scud"
