@@ -150,8 +150,8 @@ def process(result):
                    return "Unable to find link %s" %(link) 
                 fname = link[findex+1:]
                 src = re.sub('%20', '', fname)
-                dst = setting.THUMB_DIR+re.sub('(?P<grp>.*)\.(?:\w+)$','\g<grp>.png', fname, re.I)
-                src = setting.IMAGE_DIR+fname
+                dst = settings.THUMB_DIR+re.sub('(?P<grp>.*)\.(?:\w+)$','\g<grp>.png', fname, re.I)
+                src = settings.IMAGE_DIR+fname
     
                 # Open our local file for writing
                 local_file = open(src, "w")
