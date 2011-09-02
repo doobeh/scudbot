@@ -1,56 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>ScudBot</title>
-    <meta name="description" content="Scudbot Web Application">
-    <meta name="author" content="Weigonchi, Doobeh">
+{% extends 'base.html' %}
+{% block title %}Images{% endblock %}
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+{% block hero %}
+<h1>Images!</h1>
+{% endblock}
 
-    <!-- Less Stylesheets (Compiled down to CSS using less.js) -->
-    <link rel="stylesheet/less" href="/static/less/bootstrap.less">
-	<script src="/static/js/less.js"></script>
 
-    <!-- JS -->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script> <!-- JQuery -->
-    <script src="/static/js/application.js"></script> <!-- Menu's etc -->
-    
-    
-    <!-- TODO : FAV ICONS
-    <link rel="shortcut icon" href="/static/img/favicon.ico">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
-    -->
-    
-  </head>
+{% block content %}
 
-  <body>
-
-    <div class="topbar">
-      <div class="fill">
-        <div class="container">
-          <h3><a href="#">Scudbot</a></h3>
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li class="active"><a href="{{ url_for('urls') }}">Links</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
-
-      <!-- Main hero unit for a primary marketing message or call to action -->
-      <div class="hero-unit">
-        <h1>Images!</h1>
-      </div>
-      
       <!-- Show any logged messages -->
       <div class="row">
       	<div class="span16">
@@ -66,13 +23,5 @@
       		{% endif %}
       	</div>      	
       </div>
-      
 
-      <footer>
-        <p>&copy; Company 2011</p>
-      </footer>
-
-    </div> <!-- /container -->
-
-  </body>
-</html>
+{% endblock %}
