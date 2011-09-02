@@ -33,15 +33,15 @@ class Url(Base):
     __tablename__ = 'url'
     id = Column(Integer, primary_key=True)
     url = Column(Text)
+    msg = Column(Text)
     nick = Column(Text)
-    link = Column(Text)
     channel = Column(Text)
     title = Column(Text)
-    pageType = Column(Text)
-    linkType = Column(Text)
-    fileType = Column(Text)
-    imgCached = Column(Boolean)
-    imgThumb  = Column(Text)
+    page_type = Column(Text)
+    link_type = Column(Text)
+    file_type = Column(Text)
+    img_cached = Column(Boolean)
+    img_thumb  = Column(Text)
 
     date_created = Column(DateTime, default=datetime.now())
     
@@ -49,4 +49,4 @@ class Url(Base):
         self.url = url
         
     def __repr__(self):
-        return "<URL: %s>" % (self.url,)
+        return "<URL: %s>" % (self.url)

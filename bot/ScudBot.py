@@ -32,7 +32,7 @@ class ScudBot(irc.IRCClient):
             else:
                 print "user %s not authed for command %s" % (user, msg,)
         print "Checking message: %s " % (msg)
-        print parse(msg)
+        print parse(user, channel, msg)
         print "Message Checked"
         
         # Log all messages
