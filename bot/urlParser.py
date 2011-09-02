@@ -6,6 +6,7 @@ import mimetypes
 from tld import TLD
 from model import Url
 from database import db_session
+import settings
 
 #Lamda to return  None if the String is empty
 NoneAsEmpty = lambda x:None if not x else x
@@ -149,8 +150,8 @@ def process(result):
                    return "Unable to find link %s" %(link) 
                 fname = link[findex+1:]
                 src = re.sub('%20', '', fname)
-                dst = '/home/weigonchi/img/thumb/'+re.sub('(?P<grp>.*)\.(?:\w+)$','\g<grp>.png', fname, re.I)
-                src = '/home/weigonchi/img/'+fname
+                dst = setting.THUMB_DIR+re.sub('(?P<grp>.*)\.(?:\w+)$','\g<grp>.png', fname, re.I)
+                src = setting.IMAGE_DIR+fname
     
                 # Open our local file for writing
                 local_file = open(src, "w")
