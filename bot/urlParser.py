@@ -169,7 +169,7 @@ def process(result):
                 url.link_type = ltype
                 url.file_type = gftype
                 url.img_cached = True
-                url.img_thumb = fname
+                url.img_thumb = re.sub('(?P<grp>.*)\.(?:\w+)$','\g<grp>.png', fname, re.I)
                 return url
         except Exception as exc:
             #Deal with HTTPError as per http://www.voidspace.org.uk/python/articles/urllib2.shtml#handling-exceptions
