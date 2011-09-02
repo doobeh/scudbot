@@ -22,6 +22,11 @@ def index():
     m = Message.query.all()
     return render_template('index.html',messages=m)
 
+@app.route("/images/")
+def images():
+    i = Url.query.filter_by(img_cached=True).all()
+    return render_template('images.html',images=i)
+
 @app.route("/urls/")
 def urls():
     u = Url.query.all()
