@@ -36,10 +36,10 @@
         <div class="container">
           <h3><a href="#">Scudbot</a></h3>
           <ul>
-            <li><a class="{% block nav_home %}{% endblock %}" href="/">Home</a></li>
-            <li><a class="{% block nav_links %}{% endblock %}" href="{{ url_for('urls') }}">Links</a></li>
-            <li><a class="{% block nav_images %}{% endblock %}" href="{{ url_for('images') }}">Images</a></li>
-            <li><a class="{% block nav_contact %}{% endblock %}" href="#contact">Contact</a></li>
+            <li><a id="{% block nav_home %}{% endblock %}" href="/">Home</a></li>
+            <li><a id="{% block nav_links %}{% endblock %}" href="{{ url_for('urls') }}">Links</a></li>
+            <li><a id="{% block nav_images %}{% endblock %}" href="{{ url_for('images') }}">Images</a></li>
+            <li><a id="{% block nav_contact %}{% endblock %}" href="#contact">Contact</a></li>
           </ul>
         </div>
       </div>
