@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block hero %}
+	{% if message %}
+	<h1>{{ message.nick }}</h1>
+    <p>{{ message.message }}</p>
+    <p><small>{{ message.nick}} said this on {{ message.channel }} at {{ message.date_created.strftime("%I:%M%p (%d-%b-%y)") }}</small></p>
+    {% endif %}  
+{% endblock %}
+
+{% block content %}{% endblock %}

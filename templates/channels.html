@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Channels{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+
+{% block hero %}
+	<h1>Channels</h1>
+{% endblock %}
+
+
+
+
+{% block content %}
+      <!-- Show any logged messages -->
+      <div class="row">
+      	<div class="span16">
+      		<h2>Channels with Logs</h2>
+      		{% if channels %}
+      			<ul>
+      			{% for channel in channels %}
+      				<li><a href="/channel/{{channel.channel}}/">{{ channel.channel }}</a></li>
+      			{% endfor %}
+      			</ul>
+      		{% else %}
+      			<p>There are currently no logged channels.</p>
+      		{% endif %}
+      	</div>      	
+      </div>
+{% endblock %}

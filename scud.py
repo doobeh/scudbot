@@ -28,6 +28,24 @@ def urls():
     u = Url.query.all()
     return render_template('urls.html',urls=u)
 
+@app.route("/channels/")
+def channels():
+    c = db_session.query(Message.channel).distinct()
+    return render_template('channels.html',channels=c)
+
+@app.route("/perma/<int:id>/")
+def permanent(id):
+    m = Message.query.filter_by(id=id).first()
+    if m is None:
+        flash('Couldn\'t find the message, sorry!')
+        return redirect(url_for('index'))
+    return render_template('permanent.html',message=m)
+
+@app.route("/channel/<channel>/")
+def channel_log(channel):
+    c = Message.query.filter_by(channel=channel).all()
+    return render_template('log.html',messages=c)
+
 @app.route("/dataload/")
 def dataload():
     
