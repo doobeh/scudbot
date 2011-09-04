@@ -1,10 +1,4 @@
-from twisted.internet import reactor
-from twisted.web.wsgi import WSGIResource
-from twisted.web.server import Site
-
 from flask import Flask, render_template
-
-from bot.ScudBot import ScudBotFactory
 from database import db_session, init_db
 from model import Message, Admin, Url
 
@@ -42,12 +36,5 @@ def dataload():
 def shutdown_session(exception=None):
     db_session.remove()
 
-resource = WSGIResource(reactor, reactor.getThreadPool(), app) # register app with reactor.
-site = Site(resource)
-reactor.listenTCP(8538, site)  # site will listen on local server at port 80
-
 if __name__ == "__main__":
-    chan = "fortress.uk.scud"
-    reactor.connectTCP('uk.quakenet.org', 6667, ScudBotFactory('#' + chan,nickname="scudia"))
-    reactor.run()
-#    app.run()
+    app.run()
