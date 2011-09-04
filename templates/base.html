@@ -47,6 +47,8 @@
 
     <div class="container">
 
+
+      
       <!-- Main hero unit for a primary marketing message or call to action -->
       <div class="hero-unit">
       	{% block hero %}
@@ -56,6 +58,30 @@
         {% endblock %}
       </div>
       
+	{# Here we'll flash any messages that are waiting to be displayed #}    
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+	  	<div class="row">
+			<div class="span16">
+	 
+		    {% for message in messages %}
+		      	<div class="alert-message info"> 
+				<a class="close" href="#">&times;</a> 
+				<p>{{ message }}</p> 
+				</div>
+		    {% endfor %}
+
+			</div>
+		</div>
+
+	  {% endif %}
+	{% endwith %}
+	{# end flashed messages #}
+			
+			
+		
+		
+	
       {% block content %}
       <!-- Example row of columns -->
       <div class="row">
