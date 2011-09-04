@@ -5,7 +5,8 @@ from datetime import datetime
 class Message(Base):
     __tablename__ = 'messages'
     id = Column(Integer, primary_key=True)
-    user = Column(String(100))
+    user = Column(String(200))
+    nick = Column(String(100))
     channel = Column(String(200))
     message = Column(Text)
     date_created = Column(DateTime, default=datetime.now())
@@ -14,10 +15,11 @@ class Message(Base):
         self.user = user
         self.message = message
         self.channel = channel
+        self.nick = user.split("!")[0]
         
     def __repr__(self):
         return "%s : %s" % (self.user, self.message,)
-    
+
 class Admin(Base):
     __tablename__ = 'admin'
     id = Column(Integer, primary_key=True)
