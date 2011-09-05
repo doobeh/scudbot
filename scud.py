@@ -1,8 +1,10 @@
-from flask import Flask, render_template, redirect, flash, url_for
+from flask import Flask, render_template, redirect, flash, url_for, request, abort
 from database import db_session, init_db
-from model import Message, Admin, Url
+from model import Message, Admin, Url, Pagination
 from random import choice
 from jinja2.utils import generate_lorem_ipsum
+from math import ceil
+import settings
 
 init_db()
 
@@ -10,6 +12,7 @@ app = Flask(__name__)
 
 SECRET_KEY = 'asdkjad98a7sd8asd98h983h9732e2387ey682jhbd23jhb328o726387623987d62873dg23dgu2gdjh2g38327dto283d7t'
 DEBUG = True
+
 
 app.config.from_object(__name__) # load uppercase keys as config options.
 
@@ -41,10 +44,30 @@ def permanent(id):
         return redirect(url_for('index'))
     return render_template('permanent.html',message=m)
 
-@app.route("/channel/<channel>/")
-def channel_log(channel):
-    c = Message.query.filter_by(channel=channel).all()
-    return render_template('log.html',messages=c)
+
+
+@app.route("/channel/<channel>/", defaults={'page':1})
+@app.route("/channel/<channel>/page/<int:page>")
+def channel_log(channel,page):
+    rows = Message.query.filter_by(channel=channel)
+    totalRows = rows.count()
+    c = rows.limit(settings.PER_PAGE).offset((page-1)*settings.PER_PAGE)
+    if c.count() == 0:
+        c = None
+    if not c and page != 1:
+        flash('No results found on requested page... forwarding you here.')
+        return redirect(url_for('channel_log',channel=channel))
+    pagination = Pagination(page, settings.PER_PAGE, totalRows)
+    return render_template('log.html',messages=c,pagination=pagination)
+
+# Pagination Related
+def url_for_other_page(page):
+    args = request.view_args.copy()
+    args['page'] = page
+    return url_for(request.endpoint, **args)
+
+app.jinja_env.globals['url_for_other_page'] = url_for_other_page
+
 
 @app.route("/dataload/")
 def dataload():

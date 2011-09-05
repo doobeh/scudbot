@@ -3,11 +3,31 @@
 {% block nav_home %}active{% endblock %}
 
 
+
+
 {% block hero %}
 	<h1>Log.</h1>  
 {% endblock %}
 
-
+{% macro render_pagination(pagination) %}
+  <div class=pagination>
+  {%- for page in pagination.iter_pages() %}
+    {% if page %}
+      {% if page != pagination.page %}
+        <a href="{{ url_for_other_page(page) }}">{{ page }}</a>
+      {% else %}
+        <strong>{{ page }}</strong>
+      {% endif %}
+    {% else %}
+      <span class=ellipsis>…</span>
+    {% endif %}
+  {%- endfor %}
+  {% if pagination.has_next %}
+    <a href="{{ url_for_other_page(pagination.page + 1)
+      }}">Next &raquo;</a>
+  {% endif %}
+  </div>
+{% endmacro %}
 
 
 {% block content %}
@@ -30,5 +50,8 @@
       			<p>There are currently no logged messages.</p>
       		{% endif %}
       	</div>      	
+      	<div class="span16">
+      		{{ render_pagination(pagination) }}
+      	</div>
       </div>
 {% endblock %}
