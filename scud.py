@@ -5,6 +5,7 @@ from random import choice
 from jinja2.utils import generate_lorem_ipsum
 from math import ceil
 import settings
+import urllib
 
 init_db()
 
@@ -68,6 +69,10 @@ def url_for_other_page(page):
 
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 
+@app.template_filter('safeurl')
+def safeurl(uri):
+   return urllib.quote_plus(uri)
+app.jinja_env.globals['safeurl'] = safeurl
 
 @app.route("/dataload/")
 def dataload():
