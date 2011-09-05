@@ -53,9 +53,7 @@ def channel_log(channel,page):
     rows = Message.query.filter_by(channel=channel)
     totalRows = rows.count()
     c = rows.limit(settings.PER_PAGE).offset((page-1)*settings.PER_PAGE)
-    if c.count() == 0:
-        c = None
-    if not c and page != 1:
+    if not c.count() and page != 1:
         flash('No results found on requested page... forwarding you here.')
         return redirect(url_for('channel_log',channel=channel))
     pagination = Pagination(page, settings.PER_PAGE, totalRows)
