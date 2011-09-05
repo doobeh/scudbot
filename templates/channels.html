@@ -18,7 +18,7 @@
       		{% if channels %}
       			<ul>
       			{% for channel in channels %}
-      				<li><a href="/channel/{{channel.channel}}/">{{ channel.channel }}</a></li>
+      				<li><a href="/channel/{{channel.channel|safeurl}}/">{{ channel.channel }}</a></li>
       			{% endfor %}
       			</ul>
       		{% else %}
