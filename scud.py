@@ -96,9 +96,9 @@ def dataload():
     return redirect(url_for('index'))
     
 
-@app.teardown_request
-def shutdown_session(exception=None):
-    db_session.remove()
+#@app.teardown_request
+#def shutdown_session(exception=None):
+#    db_session.remove()
 
 if __name__ == "__main__":
     app.run()
