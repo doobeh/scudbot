@@ -7,10 +7,14 @@ class Message(Base):
     __tablename__ = 'messages'
     id = Column(Integer, primary_key=True)
     user = Column(String(200))
-    nick = Column(String(100))
     channel = Column(String(200))
     message = Column(Text)
     date_created = Column(DateTime, default=datetime.now())
+    
+    
+    @property
+    def nick(self):
+        return user.split("!")[0]
     
     def __init__(self,user,channel,message):
         self.user = user
@@ -57,6 +61,7 @@ class Url(Base):
     def __repr__(self):
         return "<URL: %s>" % (self.url)
 
+    @property
     def name(self):
         idx = self.nick.find("!")
         if idx == -1:
