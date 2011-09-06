@@ -30,7 +30,7 @@ def images():
 @app.route("/urls/", defaults={'page':1})
 @app.route("/urls/page/<int:page>")
 def urls(page):
-    rows = Url.query.all()
+    rows = Url.query.order_by(Url.date_created.desc())
     totalRows = rows.count()
     c = rows.limit(settings.PER_PAGE).offset((page-1)*settings.PER_PAGE)
     if not c.count() and page != 1:
