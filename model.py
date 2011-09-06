@@ -57,6 +57,12 @@ class Url(Base):
     def __repr__(self):
         return "<URL: %s>" % (self.url)
 
+    def name(self):
+        idx = self.nick.find("!")
+        if idx == -1:
+            return self.nick
+        return self.nick[:idx]
+
 class Pagination(object):
 
     def __init__(self, page, per_page, total_count):
