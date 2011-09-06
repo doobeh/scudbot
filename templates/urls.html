@@ -6,51 +6,9 @@
 	<h1>Links!</h1>
 {% endblock %}
 
-<style type="text/css">
-.info{ 
-  padding:0.8em; 
-  margin-bottom:1em;
-  border:1px solid #ddd;
-  background:#d5edf8;
-  color:#000;
-  border-color:#92cae4;
-  overflow: hidden;
-  font-size:0.9em;
-}
-.floatright {
-  float:right;
-  padding:5px;
-  border:1px solid #92cae4;
-}
-.head_foot {
-  overflow: hidden;
-  font-size:0.85em;
-}
-a.nick {
-  font-size:1.25em;
-  font-weight:900;
-}
-a:link { color:#023a5e; text-decoration:none;}
-a:active { color:#023a5e; text-decoration:none;}
-a:visited { color:#023a5e; text-decoration:none;}
-a:hover {  color:#023a5e; text-decoration:underline;}
-a.irc {
-  font-size:0.75em;
-  font-weight:700;
-}
-.content {
-  padding:3px 0px;
-}
-.time {
-  padding:5px;
-  font-size:0.8em;
-}
-.right {
-  float:right;
-}
-</style>
 
 {% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/url.css"/>
       <!-- Show any logged messages -->
       <div class="row">
       	<div class="span16">
@@ -60,16 +18,21 @@ a.irc {
                   <div class="info">
                   {% if url.img_cached %}
                    <div class="floatright">
-                     <img src="{{ url.img_thumb }}" />
+                     <a href="/static/img/{{url.img_thumb}}">
+                       <img src="/static/img/thumb/{{ url.img_thumb }}" />
+                     </a>
                    </div>
                   {% endif %}
-                   <span class="time">url.date_created</span><br/>
-                   <a class="nick" href="">{{url.nick}}</a> on <a class="irc" href="">#{{ url.channel }}</a>@<a class="irc" href="">Network</a></br>
+                   <span class="time">{{url.date_created}}</span><br/>
+                   <a class="nick" href="">{{url.nick}}</a> on <a class="irc" href="">{{ url.channel }}</a>@<a class="irc" href="">Network</a></br>
                    <div class="content">
-                     <a href="{{url.url}}">{{url.title}}</a></br>
+                     {% if not url.img_cached %}
+                       <a href="{{url.url}}">{{url.title}}</a></br>
+                     {% endif %}
+                     {{url.msg}}</br>
                    </div>
                    <div class="head_foot">
-                    <a class="right" href="">PermaLink</a>
+                    <a href="">PermaLink</a>
                    </div>
                   </div>
       			{% endfor %}
