@@ -25,7 +25,7 @@
                    </div>
                   {% endif %}
                    <span class="time">{{url.date_created.strftime('%d %b %H:%M')}}</span><br/>
-                   <a class="nick" href="">{{url.nick}}</a> on <a class="irc" href="">{{ url.channel }}</a>@<a class="irc" href="">Network</a></br>
+                   <a class="nick" href="/nick/{{url.nick|safeurl}}">{{url.nick}}</a> on <a class="irc" href="/channel/">{{url.channel|safeurl}}</a>@<a class="irc" href="/network/">Network</a></br>
                    <div class="content">
                      {% if not url.img_cached %}
                        <a href="{{url.url}}">{{url.title}}</a></br>
@@ -33,7 +33,7 @@
                      {{url.msg}}</br>
                    </div>
                    <div class="head_foot">
-                    <a href="">PermaLink</a>
+                    <a href="/url/{{url.id}}">PermaLink</a>
                    </div>
                   </div>
       			{% endfor %}
@@ -43,7 +43,9 @@
       		{% endif %}
       	</div>      	
         <div class="span16">
-            {{ render_pagination(pagination) }}
+            {% if pagination != None %}
+                {{ render_pagination(pagination) }}
+            {% endif %}
         </div>
       </div>
 {% endblock %}

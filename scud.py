@@ -27,6 +27,14 @@ def images():
     i = Url.query.filter_by(img_cached=True).all()
     return render_template('images.html',images=i)
 
+@app.route("/urls/<int:urlId>")
+def urls(urlId):
+    row = Url.query.filter_by(id=urlId).first()
+    if row = None:
+        flash('No result found...')
+        return redirect(url_for('urls'))
+    return render_remplate('urls.html',url=row)
+
 @app.route("/urls/", defaults={'page':1})
 @app.route("/urls/page/<int:page>")
 def urls(page):
