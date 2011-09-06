@@ -18,7 +18,7 @@
       		<h2>Messages</h2>
       		{% if messages %}
       			<table><tr><th>Timestamp</th><th>Nick</th><th>Message</th><th>Permalink</th></tr></thead>
-      			{% for message in messages %}
+      			{% for message in messages|reverse %}
       				<tr>
       					<td>{{ message.date_created.strftime('%a %I:%M%p') }}</td>
       					<td>{{ message.nick }}</td>
