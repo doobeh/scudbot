@@ -50,7 +50,7 @@ def permanent(id):
 @app.route("/channel/<channel>/", defaults={'page':1})
 @app.route("/channel/<channel>/page/<int:page>")
 def channel_log(channel,page):
-    rows = Message.query.filter_by(channel=channel)
+    rows = Message.query.filter_by(channel=channel).order_by(Message.date_created.desc())
     totalRows = rows.count()
     c = rows.limit(settings.PER_PAGE).offset((page-1)*settings.PER_PAGE)
     if not c.count() and page != 1:
