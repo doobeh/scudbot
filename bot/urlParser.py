@@ -109,7 +109,6 @@ def process(result):
     
             #If the url doesn't start with http://, make it so
             link = link if link.find('http://') != -1 else 'http://' + link
-            sys.stdout.write("Querying: %s\n" % link)
             page = urllib2.urlopen(link)
             content_type = None
             content_len  = None
