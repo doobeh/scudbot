@@ -14,7 +14,7 @@ class Message(Base):
     
     @property
     def nick(self):
-        return user.split("!")[0]
+        return self.user.split("!")[0]
     
     def __init__(self,user,channel,message):
         self.user = user
