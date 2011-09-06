@@ -1,0 +1,47 @@
+.info{ 
+  padding:0.8em; 
+  margin-bottom:1em;
+  border:1px solid #ddd;
+  background:#d5edf8;
+  color:#000;
+  border-color:#92cae4;
+  overflow: hidden;
+  margin:10px 7.5%;
+  width:75%;
+}
+.floatright {
+  float:right;
+  padding:5px;
+  border:1px solid #92cae4;
+}
+.head_foot {
+  overflow: hidden;
+  font-size:0.85em;
+  clear:both;
+}
+a.nick {
+  font-size:1.25em;
+  font-weight:900;
+}
+a.nick:link { color:#023a5e; text-decoration:none;}
+a.nick:active { color:#023a5e; text-decoration:none;}
+a.nick:visited { color:#023a5e; text-decoration:none;}
+a.nick:hover {  color:#023a5e; text-decoration:underline;}
+a.irc {
+  font-size:0.85em;
+  font-weight:700;
+}
+a.irc:link { color:#023a5e; text-decoration:none;}
+a.irc:active { color:#023a5e; text-decoration:none;}
+a.irc:visited { color:#023a5e; text-decoration:none;}
+a.irc:hover {  color:#023a5e; text-decoration:underline;}
+.content {
+  padding:3px 10px;
+}
+.time {
+  padding:5px;
+  font-size:0.85em;
+}
+.right {
+  float:right;
+}
