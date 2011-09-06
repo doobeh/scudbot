@@ -17,3 +17,26 @@
   {% endif %}
   </div>
 {% endmacro %}
+
+{% macro url_box(url) %}
+  <div class="info">
+  {% if url.img_cached %}
+   <div class="floatright">
+     <a href="/static/img/{{url.img_thumb}}">
+       <img src="/static/img/thumb/{{ url.img_thumb }}" />
+     </a>
+   </div>
+  {% endif %}
+   <span class="time">{{url.date_created.strftime('%d %b %H:%M')}}</span><br/>
+   <a class="nick" href="/nick/{{url.nick|safeurl}}">{{url.nick}}</a> on <a class="irc" href="/channel/{{url.channel|safeurl}}">{{url.channel}}</a>@<a class="irc" href="/network/">Network</a></br>
+   <div class="content">
+     {% if not url.img_cached %}
+       <a href="{{url.url}}">{{url.title}}</a></br>
+     {% endif %}
+     {{url.msg}}</br>
+   </div>
+   <div class="head_foot">
+    <a href="/url/{{url.id}}">PermaLink</a>
+   </div>
+  </div>
+{% endmacro %}

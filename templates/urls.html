@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% from "_helpers.html" import render_pagination %}
+{% from "_helpers.html" import url_box %}
 {% block title %}Links{% endblock %}
 {% block nav_links %}active{% endblock %}
 
@@ -14,28 +15,11 @@
       <div class="row">
       	<div class="span16">
       		<h2>Links</h2>
-      		{% if urls %}
+            {% if url %}
+                {{ url_box(url) }}
+      		{% elif urls %}
       			{% for url in urls %}
-                  <div class="info">
-                  {% if url.img_cached %}
-                   <div class="floatright">
-                     <a href="/static/img/{{url.img_thumb}}">
-                       <img src="/static/img/thumb/{{ url.img_thumb }}" />
-                     </a>
-                   </div>
-                  {% endif %}
-                   <span class="time">{{url.date_created.strftime('%d %b %H:%M')}}</span><br/>
-                   <a class="nick" href="/nick/{{url.nick|safeurl}}">{{url.nick}}</a> on <a class="irc" href="/channel/">{{url.channel|safeurl}}</a>@<a class="irc" href="/network/">Network</a></br>
-                   <div class="content">
-                     {% if not url.img_cached %}
-                       <a href="{{url.url}}">{{url.title}}</a></br>
-                     {% endif %}
-                     {{url.msg}}</br>
-                   </div>
-                   <div class="head_foot">
-                    <a href="/url/{{url.id}}">PermaLink</a>
-                   </div>
-                  </div>
+                    {{ url_box(url) }}
       			{% endfor %}
       			</ul>
       		{% else %}
@@ -43,7 +27,7 @@
       		{% endif %}
       	</div>      	
         <div class="span16">
-            {% if pagination != None %}
+            {% if pagination %}
                 {{ render_pagination(pagination) }}
             {% endif %}
         </div>
