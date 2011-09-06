@@ -17,6 +17,7 @@ class Message(Base):
         self.message = message
         self.channel = channel
         self.nick = user.split("!")[0]
+        self.date_created = datetime.now()
         
     def __repr__(self):
         return "%s : %s" % (self.user, self.message,)
@@ -29,6 +30,7 @@ class Admin(Base):
     
     def __init__(self, user):
         self.user = user
+        self.date_created = datetime.now()
     
     def __repr__(self):
         return "<User: %s>" % (self.user,)
@@ -50,6 +52,7 @@ class Url(Base):
     
     def __init__(self, url):
         self.url = url
+        self.date_created = datetime.now()
         
     def __repr__(self):
         return "<URL: %s>" % (self.url)
