@@ -33,7 +33,11 @@ def parse(nick, channel, message):
         elif isinstance(val, Url):
             # Set up the values that we don't pass to the process method
             val.msg = message
-            val.nick = nick
+            idx = nick.find("!")
+            if idx == -1:
+                val.nick = nick
+            else
+                val.nick = nick[:idx]
             val.channel = channel
             # Add to the database session
             print "msg:%s\nurl:%s\nnick:%s\nchannel:%s\ntitle:%s\npgType:%s\nlType:%s\nfType:%s\n" % (val.msg, val.url, val.nick, val.channel, val.title, val.page_type, val.link_type, val.file_type)
