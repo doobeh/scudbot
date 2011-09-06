@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from "_helpers.html" import render_pagination %}
 {% block title %}Links{% endblock %}
 {% block nav_links %}active{% endblock %}
 
@@ -41,5 +42,8 @@
       			<p>There are currently no logged urls.</p>
       		{% endif %}
       	</div>      	
+        <div class="span16">
+            {{ render_pagination(pagination) }}
+        </div>
       </div>
 {% endblock %}

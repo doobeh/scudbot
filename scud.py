@@ -27,10 +27,17 @@ def images():
     i = Url.query.filter_by(img_cached=True).all()
     return render_template('images.html',images=i)
 
-@app.route("/urls/")
-def urls():
-    u = Url.query.all()
-    return render_template('urls.html',urls=u)
+@app.route("/urls/", defaults={'page':1})
+@app.route("/urls/page/<int:page>")
+def urls(page):
+    rows = Url.query.all()
+    totalRows = rows.count()
+    c = rows.limit(settings.PER_PAGE).offset((page-1)*settings.PER_PAGE)
+    if not c.count() and page != 1:
+        flash('No results found on requested page... forwarding you here.')
+        return redirect(url_for('index',channel=channel))
+    pagination = Pagination(page, settings.PER_PAGE, totalRows)
+    return render_template('urls.html',urls=c,pagination=pagination)
 
 @app.route("/channels/")
 def channels():
