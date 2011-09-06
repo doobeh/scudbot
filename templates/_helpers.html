@@ -28,7 +28,7 @@
    </div>
   {% endif %}
    <span class="time">{{url.date_created.strftime('%d %b %H:%M')}}</span><br/>
-   <a class="nick" href="/nick/{{url.nick|safeurl}}">{{url.name}}</a> on <a class="irc" href="/channel/{{url.channel|safeurl}}">{{url.channel}}</a>@<a class="irc" href="/network/">Network</a></br>
+   <a class="nick" href="/nick/{{url.nick|safeurl}}">{{url.name()}}</a> on <a class="irc" href="/channel/{{url.channel|safeurl}}">{{url.channel}}</a>@<a class="irc" href="/network/">Network</a></br>
    <div class="content">
      {% if not url.img_cached %}
        <a href="{{url.url}}">{{url.title}}</a></br>
