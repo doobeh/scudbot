@@ -6,22 +6,35 @@ from math import ceil
 
 
 
-class Bot(Base):
-    ''' Allocates where the bots live'''
-    __tablename__ = 'bot'
+
+class Network(Base):
+    ''' All the networks available '''
+    __tablename__ = 'network'
     id = Column(Integer, primary_key=True)
-    name = Column(String(100))
     server = Column(String(100))
-    channels = relationship('Channel',backref='bot',lazy='dynamic')
+    port = Column(Integer())
+    bot = relationship("Bot", uselist=False, backref="network")
     
-    def __init__(self,name,server):
-        self.name = name
+    def __init__(self,server,port):
+        self.port = port
         self.server = server
         
     def __repr__(self):
-        return '<%s : %s>' % (self.name, self.server,)
+        return '<%s:%s>' % (self.server,self.port)
     
-
+class Bot(Base):
+    ''' What bots will need firing '''
+    __tablename__ = 'bot'
+    id = Column(Integer, primary_key=True)
+    network_id = Column(Integer, ForeignKey(Network.id))
+    nick = Column(String(100))
+    channels = relationship("Channel",backref="Bot",lazy='dynamic')
+    
+    def __init__(self,nick):
+        self.nick = nick
+        
+    def __repr__(self):
+        return '<Bot %s>' % (self.nick,)
 
 class Channel(Base):
     ''' Channels to be watched '''
@@ -42,24 +55,29 @@ class Channel(Base):
     def __repr__(self):
         return '<%s on %s>' % (self.name, self.server)
     
+class User(Base):
+    ''' IRC Users '''
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    nick = Column(String(100))
+    messages = relationship('Message',backref='user',lazy='dynamic')
     
+    def __init__(self,nick):
+        self.nick = nick
+        
+    def __repr__(self):
+        return self.nick
     
 class Message(Base):
     ''' Logs all IRC Chatter '''
     __tablename__ = 'messages'
     id = Column(Integer, primary_key=True)
-    user = Column(String(200))
-    #channel = Column(String(200))
     message = Column(Text)
     date_created = Column(DateTime, default=datetime.now())
     channel_id = Column(Integer, ForeignKey(Channel.id))
     urls = relationship('Url',backref='message',lazy='dynamic')
     user_id = Column(Integer, ForeignKey(User.id))
-    
-    @property
-    def nick(self):
-        return self.user.split("!")[0]
-    
+        
     def __init__(self,user,channel,message):
         self.user = user
         self.message = message
@@ -69,12 +87,8 @@ class Message(Base):
     def __repr__(self):
         return "%s : %s" % (self.user, self.message,)
 
-class User(Base):
-    ''' IRC Users '''
-    __tablename__ = 'user'
-    id = Column(Integer, primary_key=True)
-    nick = Column(String(100))
-    messages = relationship('Message',backref='user',lazy='dynamic')
+
+        
 
 class Url(Base):
     ''' Logs Links '''
@@ -82,16 +96,14 @@ class Url(Base):
     id = Column(Integer, primary_key=True)
     url = Column(Text)
     msg = Column(Text)
-    nick = Column(Text)
-    channel = Column(Text)
     title = Column(Text)
     page_type = Column(Text)
     link_type = Column(Text)
     file_type = Column(Text)
     img_cached = Column(Boolean)
     img_thumb  = Column(Text)
-    message_id = Column(Integer, ForeignKey(Message.id))
     
+    message_id = Column(Integer, ForeignKey(Message.id))
     date_created = Column(DateTime, default=datetime.now())
     
     def __init__(self, url):
