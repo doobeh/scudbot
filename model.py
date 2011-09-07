@@ -6,12 +6,11 @@ from math import ceil
 
 
 class Network(Base):
-    ''' All the networks available '''
     __tablename__ = 'network'
     id = Column(Integer, primary_key=True)
+    channels = relationship("NetworkChannel", backref="network")
     server = Column(String(100))
     port = Column(Integer())
-    bot = relationship("Bot", uselist=False, backref="network")
     
     def __init__(self,server,port):
         self.port = port
@@ -19,15 +18,19 @@ class Network(Base):
         
     def __repr__(self):
         return '<%s:%s>' % (self.server,self.port)
+    
 
+class Channel(Base):
+    __tablename__ = 'channel'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100))
 
 class Bot(Base):
-    ''' What bots will need firing '''
     __tablename__ = 'bot'
     id = Column(Integer, primary_key=True)
-    network_id = Column(Integer, ForeignKey(Network.id))
+    network_channels = relationship("NetworkChannel", backref="bot", lazy="dynamic")
     nick = Column(String(100))
-    channels = relationship('Channel',backref='bot',lazy='dynamic')
+    active = Column(Boolean(), default=True)
     
     def __init__(self,nick):
         self.nick = nick
@@ -35,76 +38,68 @@ class Bot(Base):
     def __repr__(self):
         return '<Bot %s>' % (self.nick,)
 
-
-class Channel(Base):
-    ''' Channels to be watched '''
-    __tablename__ = 'channel'
+class NetworkChannel(Base):
+    __tablename__ = 'networkchannel'
     id = Column(Integer, primary_key=True)
-    name = Column(String(100))
-    password = Column(String(100))
-    notes = Column(Text())
+    channel_id = Column(Integer, ForeignKey(Channel.id), primary_key=True)
+    network_id = Column(Integer, ForeignKey(Network.id), primary_key=True)
     bot_id = Column(Integer, ForeignKey(Bot.id))
+    channel = relationship("Channel", backref="network")
+    messages = relationship("Message", backref="network_channel", lazy="dynamic")
     active = Column(Boolean())
+    password = Column(String())
+    notes = Column(Text())
     
-    messages = relationship('Message',backref='channel',lazy='dynamic')
-    
-    def __init__(self,bot,name,password=None):
+    def __init__(self,bot,channel,network,password=None,active=True):
         self.bot = bot
-        self.name = name
+        self.channel = channel
+        self.network = network
         self.password = password
     
     def __repr__(self):
-        return '<%s on %s>' % (self.name, self.server)
+        return '<%s on %s>' % (self.bot.nick, self.network)
     
-        
-    
+
 class User(Base):
-    ''' IRC Users '''
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     nick = Column(String(100))
-    messages = relationship('Message',backref='user',lazy='dynamic')
-    
+    messages = relationship("Message", backref="user", lazy="dynamic")
+     
     def __init__(self,nick):
         self.nick = nick
         
     def __repr__(self):
         return self.nick
     
-    
 class Message(Base):
-    ''' Logs all IRC Chatter '''
-    __tablename__ = 'messages'
+    __tablename__ = 'message'
     id = Column(Integer, primary_key=True)
-    message = Column(Text)
-    date_created = Column(DateTime, default=datetime.now())
-    channel_id = Column(Integer, ForeignKey(Channel.id))
-    urls = relationship('Url',backref='message',lazy='dynamic')
+    network_channel_id = Column(Integer, ForeignKey(NetworkChannel.id))
     user_id = Column(Integer, ForeignKey(User.id))
-        
-    def __init__(self,user,botchannel,message):
+    message = Column(Text())
+    urls = relationship("Url", backref="message", lazy="dynamic")
+    
+    def __init__(self,user,network_channel,message):
         self.user = user
         self.message = message
-        self.botchannel = botchannel
+        self.network_channel = network_channel
         self.date_created = datetime.now()
         
     def __repr__(self):
         return "%s : %s" % (self.user, self.message,)
-
-
+    
 class Url(Base):
     ''' Logs Links '''
     __tablename__ = 'url'
     id = Column(Integer, primary_key=True)
     url = Column(Text)
-    msg = Column(Text)
     title = Column(Text)
     page_type = Column(Text)
     link_type = Column(Text)
     file_type = Column(Text)
     img_cached = Column(Boolean)
     img_thumb  = Column(Text)
-    
     message_id = Column(Integer, ForeignKey(Message.id))
     date_created = Column(DateTime, default=datetime.now())
     
@@ -113,16 +108,13 @@ class Url(Base):
         self.date_created = datetime.now()
         
     def __repr__(self):
-        return "<URL: %s>" % (self.url)
+        return "<URL: %s>" % (self.url)    
+    
 
-    @property
-    def name(self):
-        idx = self.nick.find("!")
-        if idx == -1:
-            return self.nick
-        return self.nick[:idx]
+
     
-    
+
+
 class Admin(Base):
     __tablename__ = 'admin'
     id = Column(Integer, primary_key=True)
