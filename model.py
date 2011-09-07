@@ -5,8 +5,6 @@ from datetime import datetime
 from math import ceil
 
 
-
-
 class Network(Base):
     ''' All the networks available '''
     __tablename__ = 'network'
@@ -21,20 +19,22 @@ class Network(Base):
         
     def __repr__(self):
         return '<%s:%s>' % (self.server,self.port)
-    
+
+
 class Bot(Base):
     ''' What bots will need firing '''
     __tablename__ = 'bot'
     id = Column(Integer, primary_key=True)
     network_id = Column(Integer, ForeignKey(Network.id))
     nick = Column(String(100))
-    channels = relationship("Channel",backref="Bot",lazy='dynamic')
+    botchannels = relationship('BotChannel',backref='bot',lazy='dynamic')
     
     def __init__(self,nick):
         self.nick = nick
         
     def __repr__(self):
         return '<Bot %s>' % (self.nick,)
+
 
 class Channel(Base):
     ''' Channels to be watched '''
@@ -44,8 +44,7 @@ class Channel(Base):
     password = Column(String(100))
     notes = Column(Text())
     server = Column(String(100))
-    bot_id = Column(Integer, ForeignKey(Bot.id))
-    messages = relationship('Message',backref='channel',lazy='dynamic')
+    botchannels = relationship('BotChannel',backref='channel',lazy='dynamic')
     
     def __init__(self,name,password=None,server="uk.quakenet.org"):
         self.name = name
@@ -54,6 +53,25 @@ class Channel(Base):
     
     def __repr__(self):
         return '<%s on %s>' % (self.name, self.server)
+    
+    
+class BotChannel(Base):
+    ''' Channels controlled by each bot '''
+    __tablename__ = 'botchannel'
+    id = Column(Integer, primary_key=True)
+    bot_id = Column(Integer, ForeignKey(Bot.id))
+    channel_id = Column(Integer, ForeignKey(Channel.id))
+    active = Column(Boolean())
+    messages = relationship('Message',backref='botchannel',lazy='dynamic')
+    
+    def __init__(self,bot,channel,active=True):
+        self.channel = channel
+        self.bot = bot
+        self.active = active
+        
+    def __repr__(self):
+        return '<%s : %s : %s>' % (self.bot.nick, self.bot.network, self.channel)
+        
     
 class User(Base):
     ''' IRC Users '''
@@ -68,27 +86,26 @@ class User(Base):
     def __repr__(self):
         return self.nick
     
+    
 class Message(Base):
     ''' Logs all IRC Chatter '''
     __tablename__ = 'messages'
     id = Column(Integer, primary_key=True)
     message = Column(Text)
     date_created = Column(DateTime, default=datetime.now())
-    channel_id = Column(Integer, ForeignKey(Channel.id))
+    botchannel_id = Column(Integer, ForeignKey(BotChannel.id))
     urls = relationship('Url',backref='message',lazy='dynamic')
     user_id = Column(Integer, ForeignKey(User.id))
         
-    def __init__(self,user,channel,message):
+    def __init__(self,user,botchannel,message):
         self.user = user
         self.message = message
-        self.channel = channel
+        self.botchannel = botchannel
         self.date_created = datetime.now()
         
     def __repr__(self):
         return "%s : %s" % (self.user, self.message,)
 
-
-        
 
 class Url(Base):
     ''' Logs Links '''
