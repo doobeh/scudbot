@@ -65,7 +65,7 @@ class NetworkChannel(Base):
         self.password = password
     
     def __repr__(self):
-        return '<%s on %s>' % (self.bot.nick, self.network)
+        return '<%s on %s>' % (self.channel.name, self.network)
     
 
 class User(Base):
