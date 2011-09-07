@@ -25,6 +25,12 @@ class Channel(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
 
+    def __init__(self,name):
+        self.name = name
+        
+    def __repr__(self):
+        return '<Channel: %s>' % (self.name,)
+    
 class Bot(Base):
     __tablename__ = 'bot'
     id = Column(Integer, primary_key=True)
@@ -41,8 +47,8 @@ class Bot(Base):
 class NetworkChannel(Base):
     __tablename__ = 'networkchannel'
     id = Column(Integer, primary_key=True)
-    channel_id = Column(Integer, ForeignKey(Channel.id), primary_key=True)
-    network_id = Column(Integer, ForeignKey(Network.id), primary_key=True)
+    channel_id = Column(Integer, ForeignKey(Channel.id))
+    network_id = Column(Integer, ForeignKey(Network.id))
     bot_id = Column(Integer, ForeignKey(Bot.id))
     channel = relationship("Channel", backref="network")
     messages = relationship("Message", backref="network_channel", lazy="dynamic")
