@@ -27,7 +27,7 @@ class Bot(Base):
     id = Column(Integer, primary_key=True)
     network_id = Column(Integer, ForeignKey(Network.id))
     nick = Column(String(100))
-    botchannels = relationship('BotChannel',backref='bot',lazy='dynamic')
+    channels = relationship('Channel',backref='bot',lazy='dynamic')
     
     def __init__(self,nick):
         self.nick = nick
@@ -43,34 +43,19 @@ class Channel(Base):
     name = Column(String(100))
     password = Column(String(100))
     notes = Column(Text())
-    server = Column(String(100))
-    botchannels = relationship('BotChannel',backref='channel',lazy='dynamic')
+    bot_id = Column(Integer, ForeignKey(Bot.id))
+    active = Column(Boolean())
     
-    def __init__(self,name,password=None,server="uk.quakenet.org"):
+    messages = relationship('Message',backref='channel',lazy='dynamic')
+    
+    def __init__(self,bot,name,password=None):
+        self.bot = bot
         self.name = name
         self.password = password
-        self.server = server
     
     def __repr__(self):
         return '<%s on %s>' % (self.name, self.server)
     
-    
-class BotChannel(Base):
-    ''' Channels controlled by each bot '''
-    __tablename__ = 'botchannel'
-    id = Column(Integer, primary_key=True)
-    bot_id = Column(Integer, ForeignKey(Bot.id))
-    channel_id = Column(Integer, ForeignKey(Channel.id))
-    active = Column(Boolean())
-    messages = relationship('Message',backref='botchannel',lazy='dynamic')
-    
-    def __init__(self,bot,channel,active=True):
-        self.channel = channel
-        self.bot = bot
-        self.active = active
-        
-    def __repr__(self):
-        return '<%s : %s : %s>' % (self.bot.nick, self.bot.network, self.channel)
         
     
 class User(Base):
@@ -93,7 +78,7 @@ class Message(Base):
     id = Column(Integer, primary_key=True)
     message = Column(Text)
     date_created = Column(DateTime, default=datetime.now())
-    botchannel_id = Column(Integer, ForeignKey(BotChannel.id))
+    channel_id = Column(Integer, ForeignKey(Channel.id))
     urls = relationship('Url',backref='message',lazy='dynamic')
     user_id = Column(Integer, ForeignKey(User.id))
         
