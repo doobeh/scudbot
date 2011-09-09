@@ -11,7 +11,6 @@ class Network(Base):
     channels = relationship("NetworkChannel", backref="network")
     server = Column(String(100))
     port = Column(Integer())
-    bots = relationship("Bot", backref="network")
     
     def __init__(self,server,port):
         self.port = port
@@ -35,8 +34,7 @@ class Channel(Base):
 class Bot(Base):
     __tablename__ = 'bot'
     id = Column(Integer, primary_key=True)
-    network_id = Column(Integer, ForeignKey(Network.id))
-    network_channels = relationship("NetworkChannel", backref="bot", lazy="dynamic")
+    network_channels = relationship("NetworkChannel", backref="bot", lazy="joined", collection_class=set)
     nick = Column(String(100))
     active = Column(Boolean(), default=True)
     
@@ -58,8 +56,7 @@ class NetworkChannel(Base):
     password = Column(String())
     notes = Column(Text())
     
-    def __init__(self,bot,channel,network,password=None,active=True):
-        self.bot = bot
+    def __init__(self,channel,network,password=None,active=True):
         self.channel = channel
         self.network = network
         self.password = password
