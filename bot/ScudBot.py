@@ -8,12 +8,17 @@ from urlParser import parse
 
 class ScudBot(irc.IRCClient):
     def _get_nickname(self):
-        return self.factory.nickname
+        return self.factory.bot.nick
     nickname = property(_get_nickname)
 
     def signedOn(self):
-        self.join(self.factory.channel)
-        print "Signed on as %s." % (self.nickname,)
+        print "Signed on as %s." % (self.factory.bot.nick,)
+        for netChan in self.factory.bot.network_channels:
+            chan = netChan.channel.name
+            print "Joining %s" % (chan)
+            if isinstance(chan, unicode):
+                print "Channel is Unicode"
+            self.join(chan)
 
     def joined(self, channel):
         print "Joined %s." % (channel,)
@@ -23,29 +28,13 @@ class ScudBot(irc.IRCClient):
         # Bot is talking to himself?
         if not user:
             return
+        print "%s\n%s-%s: %s" % (self.factory.bot.network.server, user, channel, msg)
         
-        # Run a command 
-        if msg.startswith('!%s' % self.nickname):
-            u = Admin.query.filter_by(user=user).first()
-            if u:
-                print "user %s sent command %s" % (user, msg,)
-            else:
-                print "user %s not authed for command %s" % (user, msg,)
-        print "Checking message: %s " % (msg)
-        print parse(user, channel, msg)
-        print "Message Checked"
-        
-        # Log all messages
-        m = Message(user, channel, msg)
-        db_session.add(m)
-        db_session.commit()
-
 class ScudBotFactory(protocol.ClientFactory):
     protocol = ScudBot
 
-    def __init__(self, channel, nickname='ScudBot'):
-        self.channel = channel
-        self.nickname = nickname
+    def __init__(self, bot):
+        self.bot = bot
 
     def clientConnectionLost(self, connector, reason):
         print "Lost connection (%s), reconnecting." % (reason,)

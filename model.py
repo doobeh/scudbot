@@ -1,9 +1,20 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey, Table
+from sqlalchemy.types import TypeDecorator
 from sqlalchemy.orm import relationship, backref
 from database import Base
 from datetime import datetime
 from math import ceil
 
+class ASCII(TypeDecorator):
+    '''Prefixes Unicode values with "PREFIX:" on the way in and
+    strips it off on the way out.
+    '''
+    impl = String
+
+    def process_result_value(self, value, dialect):
+        if value is not None:
+            return str(value)
+        return value
 
 class Network(Base):
     __tablename__ = 'network'
@@ -22,7 +33,7 @@ class Network(Base):
 class Channel(Base):
     __tablename__ = 'channel'
     id = Column(Integer, primary_key=True)
-    name = Column(String(100))
+    name = Column(ASCII(100))
 
     def __init__(self,name):
         self.name = name
@@ -36,7 +47,7 @@ class Bot(Base):
     network_id = Column(Integer, ForeignKey('network.id'))
     network = relationship("Network", lazy="joined")
     network_channels = relationship("NetworkChannel", lazy="joined", collection_class=set)
-    nick = Column(String(100))
+    nick = Column(ASCII(100))
     active = Column(Boolean(), default=True)
     
     def __init__(self,nick,network):
