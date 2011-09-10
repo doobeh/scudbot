@@ -8,11 +8,10 @@ from math import ceil
 class Network(Base):
     __tablename__ = 'network'
     id = Column(Integer, primary_key=True)
-    channels = relationship("NetworkChannel", backref="network")
     server = Column(String(100))
     port = Column(Integer())
     
-    def __init__(self,server,port):
+    def __init__(self,server,port=6667):
         self.port = port
         self.server = server
         
@@ -34,23 +33,27 @@ class Channel(Base):
 class Bot(Base):
     __tablename__ = 'bot'
     id = Column(Integer, primary_key=True)
-    network_channels = relationship("NetworkChannel", backref="bot", lazy="joined", collection_class=set)
+    network_id = Column(Integer, ForeignKey('network.id'))
+    network = relationship("Network", lazy="joined")
+    network_channels = relationship("NetworkChannel", lazy="joined", collection_class=set)
     nick = Column(String(100))
     active = Column(Boolean(), default=True)
     
-    def __init__(self,nick):
+    def __init__(self,nick,network):
         self.nick = nick
+        self.network = network
         
     def __repr__(self):
-        return '<Bot %s>' % (self.nick,)
+        return '<Bot %s on %s>' % (self.nick,self.network)
 
 class NetworkChannel(Base):
     __tablename__ = 'networkchannel'
     id = Column(Integer, primary_key=True)
-    channel_id = Column(Integer, ForeignKey(Channel.id))
-    network_id = Column(Integer, ForeignKey(Network.id))
-    bot_id = Column(Integer, ForeignKey(Bot.id))
-    channel = relationship("Channel", backref="network")
+    bot_id = Column(Integer, ForeignKey('bot.id'))
+    network = relationship("Network")
+    network_id = Column(Integer, ForeignKey('network.id'))
+    channel = relationship("Channel")
+    channel_id = Column(Integer, ForeignKey('channel.id'))
     messages = relationship("Message", backref="network_channel", lazy="dynamic")
     active = Column(Boolean())
     password = Column(String())

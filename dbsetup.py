@@ -1,8 +1,10 @@
 from model import Network, Channel, Bot, NetworkChannel, User, Message, Url
 # Import the different database modules
 from scud import app
-from database import db_session as db
+from database import db_session as db, engine
 from model import *
+
+engine.echo = False
 
 # Create some networks:
 qnet = Network('uk.quakenet.org',6667)
@@ -13,7 +15,7 @@ fuk = Channel('fortress.uk')
 ea = Channel('fortress.uk.ea')
 
 # A Bot
-scud = Bot('scud')
+scud = Bot('scud',qnet)
 
 # Create an active 'botchannel'
 qnet_fuk = NetworkChannel(fuk,qnet) # Scud monitors fortress.uk on QuakeNet.
@@ -31,7 +33,7 @@ scud.network_channels.add(qnet_ea)
 db.commit()
 
 #Create a second bot
-scud2 = Bot('scud2')
+scud2 = Bot('scud2',qnet)
 #Reassign the QuakeNet Fortress.UK channel to the second  bot
 scud2.network_channels.add(qnet_fuk)
 #Add and commit the second bot
@@ -40,4 +42,14 @@ db.commit()
 
 #At this point we have
 #Scud - QNet - #fortress.uk.ea
+scud = Bot.query.filter(Bot.nick=='scud').first()
+print "%s on %s" % (scud.nick, scud.network.server)
+for netChan in scud.network_channels:
+    print netChan.channel.name
 #Scud2 - QNet - #fortress.uk
+scud = Bot.query.filter(Bot.nick=='scud2').first()
+print "%s on %s" % (scud.nick, scud.network.server)
+for netChan in scud.network_channels:
+    print netChan.channel.name
+
+quit()
