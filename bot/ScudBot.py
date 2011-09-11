@@ -1,7 +1,7 @@
 from twisted.words.protocols import irc
 from twisted.internet import protocol
 from database import db_session
-from model import Message, Admin
+from model import *
 import re
 from urlParser import parse
 
@@ -29,6 +29,29 @@ class ScudBot(irc.IRCClient):
         if not user:
             return
         print "%s\n%s-%s: %s" % (self.factory.bot.network.server, user, channel, msg)
+
+        # Does the user exist?
+        u = User.query.filter_by(nick=user).first()
+        if u is None:
+            u = User(user)
+            db_session.add(u)
+            db_session.commit()
+            print "Added User :%s" % (u,)
+        else:
+            print "Found User :%s" % (u,)
+
+        # Grab the NetworkChannel
+        net_channel = [nc for nc in self.factory.bot.network_channels if nc.channel.name == channel[1::]][0]
+        print "Network Channel for Message is %s" % (net_channel,)
+
+        # Add the message
+        m = Message(u,net_channel,msg)
+        db_session.add(m)
+        print "Added message %s" % (m,)
+
+        # Commit the data
+        db_session.commit()
+
         
 class ScudBotFactory(protocol.ClientFactory):
     protocol = ScudBot
