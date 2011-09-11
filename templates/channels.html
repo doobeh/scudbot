@@ -15,12 +15,15 @@
       <div class="row">
       	<div class="span16">
       		<h2>Channels with Logs</h2>
-      		{% if channels %}
-      			<ul>
-      			{% for channel in channels %}
-      				<li><a href="/channel/{{channel.channel|safeurl}}/">{{ channel.channel }}</a></li>
+      		{% if networks %}
+                {% for network in networks %}
+                    <h1>{{ network.server }}: {{ network.port }}</h1>
+                    <ul>
+                    {% for network_channel in network.network_channels %}
+      				    <li><a href="/channel/{{network_channel.id}}/">{{ network_channel.channel.name }}</a></li>
+                    {% endfor %}
+                    </ul>
       			{% endfor %}
-      			</ul>
       		{% else %}
       			<p>There are currently no logged channels.</p>
       		{% endif %}

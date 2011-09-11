@@ -21,6 +21,7 @@ class Network(Base):
     id = Column(Integer, primary_key=True)
     server = Column(String(100))
     port = Column(Integer())
+    network_channels = relationship("NetworkChannel", backref="network", lazy="dynamic")
     
     def __init__(self,server,port=6667):
         self.port = port
@@ -61,7 +62,7 @@ class NetworkChannel(Base):
     __tablename__ = 'networkchannel'
     id = Column(Integer, primary_key=True)
     bot_id = Column(Integer, ForeignKey('bot.id'))
-    network = relationship("Network")
+
     network_id = Column(Integer, ForeignKey('network.id'))
     channel = relationship("Channel")
     channel_id = Column(Integer, ForeignKey('channel.id'))
@@ -98,7 +99,8 @@ class Message(Base):
     user_id = Column(Integer, ForeignKey(User.id))
     message = Column(Text())
     urls = relationship("Url", backref="message", lazy="dynamic")
-    
+    date_created = Column(DateTime, default=datetime.now())
+
     def __init__(self,user,network_channel,message):
         self.user = user
         self.message = message

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, flash, url_for, request, abort
 from database import db_session, init_db
-from model import Message, Admin, Url, Pagination
+from model import *
 from random import choice
 from jinja2.utils import generate_lorem_ipsum
 from math import ceil
@@ -19,8 +19,7 @@ app.config.from_object(__name__) # load uppercase keys as config options.
 
 @app.route("/")
 def index():
-    m = Message.query.all()
-    return render_template('index.html',messages=m)
+    return render_template('index.html')
 
 @app.route("/images/")
 def images():
@@ -47,10 +46,11 @@ def urls(page):
     pagination = Pagination(page, settings.PER_PAGE, totalRows)
     return render_template('urls.html',urls=c,pagination=pagination)
 
+
 @app.route("/channels/")
 def channels():
-    c = db_session.query(Message.channel).distinct()
-    return render_template('channels.html',channels=c)
+    n = Network.query.all()
+    return render_template('channels.html',networks=n)
 
 @app.route("/perma/<int:id>/")
 def permanent(id):
@@ -62,10 +62,10 @@ def permanent(id):
 
 
 
-@app.route("/channel/<channel>/", defaults={'page':1})
-@app.route("/channel/<channel>/page/<int:page>")
+@app.route("/channel/<int:channel>/", defaults={'page':1})
+@app.route("/channel/<int:channel>/page/<int:page>")
 def channel_log(channel,page):
-    rows = Message.query.filter_by(channel=channel).order_by(Message.date_created.desc())
+    rows = Message.query.filter_by(network_channel_id=channel).order_by(Message.id.desc())
     totalRows = rows.count()
     c = rows.limit(settings.PER_PAGE).offset((page-1)*settings.PER_PAGE)
     if not c.count() and page != 1:

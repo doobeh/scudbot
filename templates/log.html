@@ -21,7 +21,7 @@
       			{% for message in messages|reverse %}
       				<tr>
       					<td>{{ message.date_created.strftime('%a %I:%M%p') }}</td>
-      					<td>{{ message.nick }}</td>
+      					<td>{{ message.user.nick }}</td>
       					<td>{{ message.message }}</td>
       					<td><a href="{{ url_for('permanent',id=message.id) }}">Permalink</a></td>
       				</tr>
