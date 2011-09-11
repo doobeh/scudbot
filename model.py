@@ -46,7 +46,7 @@ class Bot(Base):
     id = Column(Integer, primary_key=True)
     network_id = Column(Integer, ForeignKey('network.id'))
     network = relationship("Network", lazy="joined")
-    network_channels = relationship("NetworkChannel", lazy="joined", collection_class=set)
+    network_channels = relationship("NetworkChannel", backref="bot", lazy="joined", collection_class=set)
     nick = Column(ASCII(100))
     active = Column(Boolean(), default=True)
     
