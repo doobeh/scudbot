@@ -21,25 +21,22 @@ NoneAsEmpty = lambda x:None if not x else x
 #7 -pathres if the path after the domain www.blah.com/this/blah.txt has /this/blah.txt
 ## -gftype is the mime type (jpeg, mpeg, etc)
 
-def parse(nick, channel, message):
+def parse(message):
     prog = re.compile("(?P<link>(?:(?P<ltype>[a-z0-9]{2,15})\:\/\/)?(?:(?P<uname>[-_\w]+)\:?\w*@)?(?:(?P<domain>[\.\-_\w]*\.(?P<ptld>[a-z]{2,}))|(?P<ip>(?:(?:[01]?[0-9]{1,2}|2(?:[0-4][0-9]|5[0-5]))\.){3}(?:[01]?[0-9]{1,2}|2(?:[0-4][0-9]|5[0-5]))))(?:\:(?P<port>\d+))?\/?(?P<pathres>[\w\#\/\Q~:;,.?+=&%@!-\E]+)?)",re.I)
     # Check and log URLS:
-    urls = re.findall(prog, message)
+    urls = re.findall(prog, message.message)
     retStr = ''
     for url in urls:
         val = process(url)
         if isinstance(val, str):
-            print "Problem processing:\nmessage %s\nchannel %s\nnick %s response %s" % (message, channel, nick, val)
+            print "Problem processing:\nmessage %s\nchannel %s\nnick %s response %s" % (message.message, message.network_channel.channel.name, message.user.nick, val)
         elif isinstance(val, Url):
             # Set up the values that we don't pass to the process method
-            val.msg = message
-            val.nick = nick
-            val.channel = channel
+            val.message = message
             # Add to the database session
-            print "msg:%s\nurl:%s\nnick:%s\nchannel:%s\ntitle:%s\npgType:%s\nlType:%s\nfType:%s\n" % (val.msg, val.url, val.nick, val.channel, val.title, val.page_type, val.link_type, val.file_type)
+            print "msg:%s\nurl:%s\nnick:%s\nchannel:%s\ntitle:%s\npgType:%s\nlType:%s\nfType:%s\n" % (val.message.message, val.url, val.message.user.nick, val.message.network_channel.channel.name, val.title, val.page_type, val.link_type, val.file_type)
             db_session.add(val)
     return retStr
-#    db_session.commit()
 
 # Returns a Url if the result was processed
 # Otherwise it returns a String with the error in    

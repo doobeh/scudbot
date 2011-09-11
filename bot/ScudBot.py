@@ -49,8 +49,12 @@ class ScudBot(irc.IRCClient):
         db_session.add(m)
         print "Added message %s" % (m,)
 
+        parse(m)
+
         # Commit the data
         db_session.commit()
+
+
 
         
 class ScudBotFactory(protocol.ClientFactory):
