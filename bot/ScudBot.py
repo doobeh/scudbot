@@ -30,6 +30,9 @@ class ScudBot(irc.IRCClient):
             return
         print "%s\n%s-%s: %s" % (self.factory.bot.network.server, user, channel, msg)
 
+        # Drop the hostname part of username:
+        user = user.split('!')[0]
+        
         # Does the user exist?
         u = User.query.filter_by(nick=user).first()
         if u is None:
