@@ -98,14 +98,16 @@ def process(result):
             #Unknown format, return null
             ltype = "Unknown"
     
-    if (((valdomain and istld) or isip) and (ltype == 'http' or (ltype is None and valwww) or ltype == 'dcon')):
+    if (((valdomain and istld) or isip) and (ltype == 'http' or ltype == 'https' or (ltype is None and valwww) or ltype == 'dcon')):
             #Look at using http://www.crummy.com/software/BeautifulSoup/
         try:
             #Save the proper url for later use
             tlink = link
     
             #If the url doesn't start with http://, make it so
-            link = link if link.find('http://') != -1 else 'http://' + link
+            if(link.find('http://') == -1 and link.find('https://') == -1):
+                link = 'https://' + link
+
             sys.stdout.write("Querying: %s\n" % link)
             page = urllib2.urlopen(link)
             content_type = None
@@ -173,8 +175,3 @@ def process(result):
             print exc
             pass
     return "None\n"
-
-        #$inserter = $dbh->prepare("INSERT INTO linkage (nick, whence, link, channel, pgTitle, pgType, pgSize, ltype,pgfType,imgCached,imgThumb) VALUES (?,now(),?,?,?,?,?,?,?,?,?)");
-#iurl = raw_input('URL: ')
-#sys.stdout.write(parse(iurl))
-#sys.stdout.write('\n')
