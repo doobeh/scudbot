@@ -7,8 +7,8 @@ from model import *
 engine.echo = False
 
 # Create some networks:
-fnode = Network('uk.quakenet.org',6667)
-qnet = Network('irc.freenode.com',6667)
+qnet = Network('uk.quakenet.org',6667)
+fnode = Network('irc.freenode.com',6667)
 
 # Some Channels
 fuk = Channel('fortress.uk')
