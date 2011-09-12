@@ -41,7 +41,7 @@ class ScudBot(irc.IRCClient):
             print "Found User :%s" % (u,)
 
         # Grab the NetworkChannel
-        net_channel = [nc for nc in self.factory.bot.network_channels if nc.channel.name == channel[1::]][0]
+        net_channel = [nc for nc in self.factory.bot.network_channels if nc.channel.name == channel][0]
         print "Network Channel for Message is %s" % (net_channel,)
 
         # Add the message

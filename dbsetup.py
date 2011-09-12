@@ -11,9 +11,9 @@ qnet = Network('uk.quakenet.org',6667)
 fnode = Network('irc.freenode.com',6667)
 
 # Some Channels
-fuk = Channel('fortress.uk')
-ea = Channel('fortress.uk.ea')
-fscud = Channel('fortress.uk.scud')
+fuk = Channel('#fortress.uk')
+ea = Channel('#fortress.uk.ea')
+fscud = Channel('#fortress.uk.scud')
 
 # A Bot
 scud = Bot('scud',qnet)
