@@ -151,13 +151,14 @@ def process(result):
             elif(re.search("image\/",content_type, re.I)):
                 type_index = content_type.rfind('/')
                 ftype = content_type[type_index+1:]
-                fname = genFilename() + "." + ftype
+                fname = genFilename()
 
-                dst = settings.THUMB_DIR+fname
-                src = settings.IMAGE_DIR+fname
+                dst = settings.THUMB_DIR+fname + '.png'
+                src = settings.IMAGE_DIR+fname + ftype
                 while(os.path.exists(src)):
-                    fname = genFilename() + "." + ftype
-                    src = settings.IMAGE_DIR+fname
+                    fname = genFilename()
+                    dst = settings.THUMB_DIR+fname + '.png'
+                    src = settings.IMAGE_DIR+fname + '.' + ftype
     
                 # Open our local file for writing
                 local_file = open(src, "w")
@@ -175,7 +176,7 @@ def process(result):
                 url.link_type = ltype
                 url.file_type = gftype
                 url.img_cached = True
-                url.img_thumb = re.sub('(?P<grp>.*)\.(?:\w+)$','\g<grp>.png', fname, re.I)
+                url.img_thumb = fname
                 return url
         except Exception as exc:
             #Deal with HTTPError as per http://www.voidspace.org.uk/python/articles/urllib2.shtml#handling-exceptions
