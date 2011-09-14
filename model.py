@@ -108,7 +108,7 @@ class Message(Base):
         self.date_created = datetime.now()
         
     def __repr__(self):
-        return "%s : %s" % (self.user, self.message,)
+        return "%s" % (self.user, self.message,)
     
 class Url(Base):
     ''' Logs Links '''
