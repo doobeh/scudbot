@@ -31,7 +31,7 @@
                         {% if message.is_action  %}
       					    <td><b>{{ message.message }}</b></td>
                         {% else %}
-      					    <td>{{ message.message }}</td>
+      					    <td class="logged_message">{{ message.message }}</td>
                         {% endif %}
       					<td><a href="{{ url_for('permanent',id=message.id) }}">Permalink</a></td>
       				</tr>
