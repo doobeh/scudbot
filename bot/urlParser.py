@@ -1,8 +1,11 @@
 import re
+import os
 import sys
 import Image
 import urllib2
 import mimetypes
+import string
+from random import choice
 from tld import TLD
 from model import Url
 from database import db_session
@@ -11,6 +14,8 @@ import settings
 #Lamda to return  None if the String is empty
 NoneAsEmpty = lambda x:None if not x else x
 
+def genFilename(length=8, chars=string.letters + string.digits):
+    return ''.join([choice(chars) for i in range(length)])
 #0 -link is the actual link/url
 #1 -ltype is the type of link it is (http, direct connect, ftp, etc)
 #2 -uname is the username if there is one for ftp, http, connections
@@ -144,13 +149,15 @@ def process(result):
                 url.img_thumb = None
                 return url
             elif(re.search("image\/",content_type, re.I)):
-                findex = link.rfind('/')
-                if(findex == -1):
-                   return "Unable to find link %s" %(link) 
-                fname = link[findex+1:]
-                src = re.sub('%20', '', fname)
-                dst = settings.THUMB_DIR+re.sub('(?P<grp>.*)\.(?:\w+)$','\g<grp>.png', fname, re.I)
+                type_index = content_type.rfind('/')
+                ftype = content_type[type_index+1:]
+                fname = genFilename() + "." + ftype
+
+                dst = settings.THUMB_DIR+fname
                 src = settings.IMAGE_DIR+fname
+                while(os.path.exists(src)):
+                    fname = genFilename() + "." + ftype
+                    src = settings.IMAGE_DIR+fname
     
                 # Open our local file for writing
                 local_file = open(src, "w")
@@ -175,3 +182,4 @@ def process(result):
             print exc
             pass
     return "None\n"
+
