@@ -98,13 +98,15 @@ class Message(Base):
     network_channel_id = Column(Integer, ForeignKey(NetworkChannel.id))
     user_id = Column(Integer, ForeignKey(User.id))
     message = Column(Text())
+    is_action = Column(Boolean())
     urls = relationship("Url", backref="message", lazy="dynamic")
     date_created = Column(DateTime, default=datetime.now())
 
-    def __init__(self,user,network_channel,message):
+    def __init__(self,user,network_channel,message,is_action=False):
         self.user = user
         self.message = message
         self.network_channel = network_channel
+        self.is_action = is_action
         self.date_created = datetime.now()
         
     def __repr__(self):
@@ -119,7 +121,7 @@ class Url(Base):
     page_type = Column(Text)
     link_type = Column(Text)
     file_type = Column(Text)
-    img_cached = Column(Boolean)
+    img_cached = Column(Text)
     img_thumb  = Column(Text)
     message_id = Column(Integer, ForeignKey(Message.id))
     date_created = Column(DateTime, default=datetime.now())

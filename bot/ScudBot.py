@@ -23,13 +23,7 @@ class ScudBot(irc.IRCClient):
     def joined(self, channel):
         print "Joined %s." % (channel,)
 
-    def privmsg(self, user, channel, msg):
-        
-        # Bot is talking to himself?
-        if not user:
-            return
-        print "%s\n%s-%s: %s" % (self.factory.bot.network.server, user, channel, msg)
-
+    def process_message(self,user,channel,msg,is_action=False):
         # Drop the hostname part of username:
         user = user.split('!')[0]
         
@@ -47,8 +41,17 @@ class ScudBot(irc.IRCClient):
         net_channel = [nc for nc in self.factory.bot.network_channels if nc.channel.name == channel][0]
         print "Network Channel for Message is %s" % (net_channel,)
 
-        # Add the message
-        m = Message(u,net_channel,msg)
+        # return the message
+        return Message(u,net_channel,msg,is_action)
+
+    def privmsg(self, user, channel, msg):
+        
+        # Bot is talking to himself?
+        if not user:
+            return
+        print "%s\n%s-%s: %s" % (self.factory.bot.network.server, user, channel, msg)
+
+        m = self.process_message(user, channel, msg)
         db_session.add(m)
         print "Added message %s" % (m,)
 
@@ -57,9 +60,18 @@ class ScudBot(irc.IRCClient):
         # Commit the data
         db_session.commit()
 
+    def action(self, user, channel, msg):
+        # Bot is talking to himself?
+        if not user:
+            return
+        print "%s\n%s-%s: %s" % (self.factory.bot.network.server, user, channel, msg)
 
-
-        
+        m = self.process_message(user, channel, msg, True)
+        db_session.add(m)
+        print "Added action %s %s" % (m,m.is_action)
+        db_session.commit()
+       
+ 
 class ScudBotFactory(protocol.ClientFactory):
     protocol = ScudBot
 

@@ -145,20 +145,24 @@ def process(result):
                 url.page_type = content_type
                 url.link_type = ltype
                 url.file_type = gftype
-                url.img_cached = False
+                url.img_cached = None
                 url.img_thumb = None
                 return url
             elif(re.search("image\/",content_type, re.I)):
                 type_index = content_type.rfind('/')
                 ftype = content_type[type_index+1:]
-                fname = genFilename() + '.' + ftype
+                genfname = genFilename()
+                fthumb = genfname+".png"
+                fcached = genfname+'.'+ftype
 
-                dst = settings.THUMB_DIR+fname
-                src = settings.IMAGE_DIR+fname
+                dst = settings.THUMB_DIR+fthumb
+                src = settings.IMAGE_DIR+fcached
                 while(os.path.exists(src)):
-                    fname = genFilename()
-                    dst = settings.THUMB_DIR+fname
-                    src = settings.IMAGE_DIR+fname
+                    genfname = genFilename()
+                    fthumb = genfname+".png"
+                    fcached = genfname+'.'+ftype
+                    dst = settings.THUMB_DIR+fthumb
+                    src = settings.IMAGE_DIR+fcached
     
                 # Open our local file for writing
                 local_file = open(src, "w")
@@ -175,8 +179,8 @@ def process(result):
                 url.page_type = content_type
                 url.link_type = ltype
                 url.file_type = gftype
-                url.img_cached = True
-                url.img_thumb = fname
+                url.img_cached = fcached
+                url.img_thumb = fthumb
                 return url
         except Exception as exc:
             #Deal with HTTPError as per http://www.voidspace.org.uk/python/articles/urllib2.shtml#handling-exceptions

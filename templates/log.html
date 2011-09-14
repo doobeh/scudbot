@@ -28,7 +28,11 @@
       				<tr>
       					<td>{{ message.date_created.strftime('%a %I:%M%p') }}</td>
       					<td>{{ message.user.nick }}</td>
-      					<td>{{ message.message }}</td>
+                        {% if message.is_action  %}
+      					    <td><b>{{ message.message }}</b></td>
+                        {% else %}
+      					    <td>{{ message.message }}</td>
+                        {% endif %}
       					<td><a href="{{ url_for('permanent',id=message.id) }}">Permalink</a></td>
       				</tr>
       			{% endfor %}
