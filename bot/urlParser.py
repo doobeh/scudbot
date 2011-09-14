@@ -151,14 +151,14 @@ def process(result):
             elif(re.search("image\/",content_type, re.I)):
                 type_index = content_type.rfind('/')
                 ftype = content_type[type_index+1:]
-                fname = genFilename()
+                fname = genFilename() + '.' + ftype
 
-                dst = settings.THUMB_DIR+fname + '.png'
-                src = settings.IMAGE_DIR+fname + ftype
+                dst = settings.THUMB_DIR+fname
+                src = settings.IMAGE_DIR+fname
                 while(os.path.exists(src)):
                     fname = genFilename()
-                    dst = settings.THUMB_DIR+fname + '.png'
-                    src = settings.IMAGE_DIR+fname + '.' + ftype
+                    dst = settings.THUMB_DIR+fname
+                    src = settings.IMAGE_DIR+fname
     
                 # Open our local file for writing
                 local_file = open(src, "w")
