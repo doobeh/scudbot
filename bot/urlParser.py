@@ -134,8 +134,9 @@ def process(result):
     
                 #Get the title
                 dtitle = title.group(0)
+
                 #Strip non valid characters and white spaces greater than 2 long
-                dtitle = re.sub('[^\[\]\w\s,._\-\/\\}{]+', '', dtitle)
+                dtitle = re.sub('[^\[\]\w\s,._\-\/\\}{&;]+', '', dtitle)
                 dtitle = re.sub('/\s{2,}', '', dtitle);
     
                 #If the title still has content use it, otherwise, use the url
