@@ -45,11 +45,12 @@ class ScudBot(irc.IRCClient):
         return Message(u,net_channel,msg,is_action)
 
     def privmsg(self, user, channel, msg):
-        
         # Bot is talking to himself?
         if not user:
             return
-        print "%s\n%s-%s: %s" % (self.factory.bot.network.server, user, channel, msg)
+        print "Server: %s\nUser:%s\nChannel:%s\n%s" % (self.factory.bot.network.server, user, channel, msg)
+        if channel == self.nickname or channel == '*':
+            return
 
         m = self.process_message(user, channel, msg)
         db_session.add(m)
@@ -65,6 +66,8 @@ class ScudBot(irc.IRCClient):
         if not user:
             return
         print "%s\n%s-%s: %s" % (self.factory.bot.network.server, user, channel, msg)
+        if channel == self.nickname or channel == '*':
+            return
 
         m = self.process_message(user, channel, msg, True)
         db_session.add(m)
