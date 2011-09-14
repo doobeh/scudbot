@@ -10,6 +10,12 @@
 
 
 {% block content %}
+      {# Pagination #}
+      <div class="span16">
+            {% if pagination %}
+                {{ render_pagination(pagination) }}
+            {% endif %}
+      </div>
       <!-- Show any logged messages -->
       <div class="row">
       	<div class="span16">
@@ -25,10 +31,6 @@
       			<p>There are currently no logged urls.</p>
       		{% endif %}
       	</div>      	
-        <div class="span16">
-            {% if pagination %}
-                {{ render_pagination(pagination) }}
-            {% endif %}
-        </div>
+
       </div>
 {% endblock %}
