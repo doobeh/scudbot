@@ -32,9 +32,10 @@
    <div class="content">
      {% if not url.img_cached %}
        <a href="{{url.url}}">{{url.title}}</a></br>
-       {{url.message.message}}</br>
+     {% else %}
+       <a href="{{url.url}}">{{url.url}}</a></br>
      {% endif %}
-     {{url.msg}}</br>
+     {{url.message}}</br>
    </div>
    <div class="head_foot">
     <a href="/url/{{url.id}}">PermaLink</a>
