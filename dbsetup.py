@@ -1,4 +1,4 @@
-from model import Network, Channel, Bot, NetworkChannel, User, Message, Url
+from model import Network, Channel, Bot, NetworkChannel, User, Message, Url, Admin
 # Import the different database modules
 from scud import app
 from database import db_session as db, engine
@@ -42,7 +42,8 @@ scud2.network_channels.add(qnet_fuk)
 db.add(scud2)
 db.commit()
 
-Bot.query.filter(Bot.nick=='scud').first().network_channels.add(qnet_scud)
+b = Bot.query.filter(Bot.nick=='scud').first()
+b.network_channels.add(qnet_scud)
 db.commit()
 
 #At this point we have
@@ -61,5 +62,8 @@ for netChan in scud.network_channels:
     if isinstance(netChan.channel.name, str):
         print "Chan is ascii"
     print netChan.channel.name
-
+    
+admin = Admin("PintSizedCat")
+db.add(admin)
+db.commit()
 quit()
