@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey, Table
 from sqlalchemy.types import TypeDecorator
 from sqlalchemy.orm import relationship, backref
+from flaskext.login import UserMixin
 from database import Base
 from datetime import datetime
 from math import ceil
@@ -132,13 +133,8 @@ class Url(Base):
         
     def __repr__(self):
         return "<URL: %s>" % (self.url)    
-    
 
-
-    
-
-
-class Admin(Base):
+class Admin(Base, UserMixin):
     __tablename__ = 'admin'
     id = Column(Integer, primary_key=True)
     user = Column(String(100))

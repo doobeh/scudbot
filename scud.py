@@ -1,4 +1,6 @@
 from flask import Flask, render_template, redirect, flash, url_for, request, abort
+from flaskext.login import LoginManager, login_user, login_required, fresh_login_required, logout_user
+from forms.LoginForm import LoginForm
 from database import db_session, init_db
 from model import *
 from random import choice
@@ -11,12 +13,47 @@ init_db()
 
 app = Flask(__name__)
 
+#Create the login manager
+login_manager = LoginManager()
+#Setup the app in the login_manager
+login_manager.setup_app(app)
+
 SECRET_KEY = 'asdkjad98a7sd8asd98h983h9732e2387ey682jhbd23jhb328o726387623987d62873dg23dgu2gdjh2g38327dto283d7t'
 DEBUG = True
 
-
 app.config.from_object(__name__) # load uppercase keys as config options.
 
+
+login_manager.login_view = "login"
+
+##Login Section
+@login_manager.user_loader
+def load_user(user):
+    return Admin.query.get(user)
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        # login and validate the user...
+        login_user(form.admin)
+        flash("Logged in successfully.")
+        return redirect(request.args.get("next") or url_for("index"))
+    return render_template("login.html", form=form)
+
+@app.route("/admin")
+@login_required
+def admin():
+    return render_template('admin.html')
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("index"))
+
+
+##App section
 @app.route("/")
 def index():
     return render_template('index.html')
@@ -89,7 +126,6 @@ app.jinja_env.globals['safeurl'] = safeurl
 
 @app.route("/dataload/")
 def dataload():
-    
     # Create fake messages:
     names = ('alice','bob','clive','dave','enid','frank','george')
     hosts = ('b33f.net','google.com','brah.com')
