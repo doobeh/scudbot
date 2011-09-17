@@ -12,12 +12,18 @@
 
       <!-- Show any logged messages -->
       <div class="row">
-      	<div class="span16">
-      		<h2>Images</h2>
+      	<div class="span12 offset2">
       		{% if images %}
-      			<ul>
+      			<ul class="media-grid">
       			{% for image in images %}
-      				<li><img src="/static/img/thumb/{{ image.img_thumb }}" /></li>
+      				<li class="span4">
+      					<a href="/static/img/{{ image.img_cached }}">
+      						<img class="thumbnail" src="/static/img/thumb/{{ image.img_thumb }}" />
+      					</a>
+      				</li>
+      				{% if loop.index is divisibleby 3 %}
+      				</ul><ul class="media-grid">
+      				{% endif %}
       			{% endfor %}
       			</ul>
       		{% else %}
