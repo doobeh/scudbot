@@ -24,28 +24,3 @@
           </ul>
   </div>
 {% endmacro %}
-
-{% macro url_box(url) %}
-  <div class="info">
-  {% if url.img_cached is not none %}
-   <div class="floatright">
-     <a href="/static/img/{{url.img_cached}}">
-       <img src="/static/img/thumb/{{ url.img_thumb }}" />
-     </a>
-   </div>
-  {% endif %}
-   <span class="time">{{url.date_created.strftime('%d %b %H:%M')}}</span><br/>
-   <a class="nick" href="/nick/{{url.message.user.nick|safeurl}}">{{url.message.user.nick}}</a> on <a class="irc" href="/channel/{{url.channel|safeurl}}">{{url.message.network_channel.channel.name}}</a>@<a class="irc" href="/network/{{ url.message.network_channel.network_id}}/">{{ url.message.network_channel.network.server }}</a></br>
-   <div class="content">
-     {% if url.img_cached is none %}
-       <a href="{{url.url}}">{{url.title}}</a></br>
-     {% else %}
-       <a href="{{url.url}}">{{url.url}}</a></br>
-     {% endif %}
-     {{url.message}}</br>
-   </div>
-   <div class="head_foot">
-    <a href="/url/{{url.id}}">PermaLink</a>
-   </div>
-  </div>
-{% endmacro %}
