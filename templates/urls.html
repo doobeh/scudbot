@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% from "_helpers.html" import render_pagination %}
-{% from "url_boxes.html" import url_box_default as url_box %}
+{% from "_helpers.html" import url_box %}
+{% block extra_style %}
+	<link rel="stylesheet/less" href="/static/less/urls.less">
+{% endblock %}
+
 {% block title %}Links{% endblock %}
 {% block nav_links %}active{% endblock %}
 
@@ -19,18 +23,40 @@
       <!-- Show any logged messages -->
       <div class="row">
       	<div class="span16">
-      		<h2>Links</h2>
-            {% if url %}
-                {{ url_box(url) }}
-      		{% elif urls %}
-      			{% for url in urls %}
-                    {{ url_box(url) }}
-      			{% endfor %}
-      			</ul>
-      		{% else %}
-      			<p>There are currently no logged urls.</p>
-      		{% endif %}
-      	</div>      	
+        	{% if url %}
+            <h3 class="url-group-heading">{{url.date_created.date()}}</h3>
+  			<ol class="url-group">
+        		{{ url_box(url) }}
+        	</ol>
+  			{% elif urls %}
+  				{% for url in urls %}
+  					{% if date is defined %}
+  						{% if date != url.date_created.date() %}
+  			</ol>
+  			<span class="url-group-heading">{{url.date_created.date()}}</span>
+  			<ol class="url-group">
+  							{% set date = url.date_created.date() %}
+  						{% endif %}
+  					{% else %}
+  			<span class="url-group-heading">{{url.date_created.date()}}</span>
+  			<ol class="url-group">
+  						{% set date = url.date_created.date() %}
+  					{% endif %}
 
+				{% if loop.index is divisibleby 2 %}
+				<li class="url-group-item ">
+				{% else %}
+				<li class="url-group-item alt_background">
+				{% endif %}
+           				{{ url_box(url) }}
+           		</li>
+      			{% endfor %}
+      			{% if date is defined %}
+      		</ol>
+      			{% endif %}
+	  		{% else %}
+  			<p>There are currently no logged urls.</p>
+  			{% endif %}
+      	</div>      	
       </div>
 {% endblock %}

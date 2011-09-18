@@ -24,3 +24,25 @@
           </ul>
   </div>
 {% endmacro %}
+
+{% macro url_box(url) %}
+  {% if url.img_cached is not none %}
+   <div class="img_float">
+     <a href="/static/img/{{url.img_cached}}">
+       <img src="/static/img/thumb/{{ url.img_thumb }}" />
+     </a>
+   </div>
+  {% endif %}
+   <span class="label"><a href="/url/{{url.id}}">{{url.date_created.strftime('%H:%M')}}</a></span>
+   &lt;<a class="nick" href="/nick/{{url.message.user.nick|safeurl}}">{{url.message.user.nick}}</a>&gt; on 
+   <a class="irc" href="/channel/{{url.channel|safeurl}}">{{url.message.network_channel.channel.name}}</a>
+    @ <a class="irc" href="/network/{{ url.message.network_channel.network_id}}/">{{ url.message.network_channel.network.server }}</a>
+   <div class="content">
+     {% if url.img_cached is none %}
+       <a href="{{url.url}}">{{url.title}}</a></br>
+     {% else %}
+       <a href="{{url.url}}">{{url.url}}</a></br>
+     {% endif %}
+   </div>
+</li>
+{% endmacro %}
