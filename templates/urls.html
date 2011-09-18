@@ -24,9 +24,11 @@
       <div class="row">
       	<div class="span16">
         	{% if url %}
-            <h3 class="url-group-heading">{{url.date_created.date()}}</h3>
+            <span class="url-group-heading">{{url.date_created.date()}}</span>
   			<ol class="url-group">
+  				<li class="url-group-item ">
         		{{ url_box(url) }}
+        		</li>
         	</ol>
   			{% elif urls %}
   				{% for url in urls %}
