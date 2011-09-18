@@ -13,6 +13,8 @@
 
     <!-- Less Stylesheets (Compiled down to CSS using less.js) -->
     <link rel="stylesheet/less" href="/static/less/bootstrap.less">
+    {% block extra_style %}
+    {% endblock %}
 	<script src="/static/js/less.js"></script>
 
     <!-- JS -->
@@ -26,7 +28,6 @@
     <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
     <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
     -->
-    
   </head>
 
   <body>
