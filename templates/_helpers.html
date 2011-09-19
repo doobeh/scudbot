@@ -46,7 +46,11 @@
      {% endif %}
        <a href="javascript:;" title="Show original message" class="message-show"><img src="{{ url_for('static', filename='img/notebook--arrow.png') }}" /></a>
        <div class="message-text">
-           <p>{{ url.message.message }}</p>
+           <table>
+           {% for m in url.conversation %}
+           <tr><td>{{ m.user.nick }}</td><td>{{ m.message }}</td></tr>
+           {% endfor %}
+           </table>
        </div>
    </div>
 </li>
