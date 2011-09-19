@@ -60,7 +60,7 @@ def index():
 
 @app.route("/images/")
 def images():
-    i = Url.query.filter_by(img_cached=True).all()
+    i = Url.query.filter_by(Url.img_cached != None).all()
     return render_template('images.html',images=i)
 
 @app.route("/url/<int:urlId>")
