@@ -38,13 +38,12 @@
    <a class="irc" href="/channel/{{url.channel|safeurl}}">{{url.message.network_channel.channel.name}}</a>
     @ <a class="irc" href="/network/{{ url.message.network_channel.network_id}}/">{{ url.message.network_channel.network.server }}</a>
    <div class="content">
-     {% if url.img_cached is none %}
-       <a href="{{url.url}}">{{url.title}}</a></br>
-     {% else %}
-       <a href="{{url.url}}">{{url.url}}</a></br>
-
-     {% endif %}
        <a href="javascript:;" title="Show original message" class="message-show"><img src="{{ url_for('static', filename='img/notebook--arrow.png') }}" /></a>
+     {% if url.img_cached is none %}
+       <a href="{{url.url}}" target="_blank">{{url.title}}</a><br/>
+     {% else %}
+       <a href="{{url.url}}" target="_blank">{{url.url}}</a><br/>
+     {% endif %}
        <div class="message-text">
            <table>
            {% for m in url.conversation %}
