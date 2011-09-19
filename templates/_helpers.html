@@ -42,7 +42,12 @@
        <a href="{{url.url}}">{{url.title}}</a></br>
      {% else %}
        <a href="{{url.url}}">{{url.url}}</a></br>
+
      {% endif %}
+       <a href="javascript:;" title="Show original message" class="message-show"><img src="{{ url_for('static', filename='img/notebook--arrow.png') }}" /></a>
+       <div class="message-text">
+           <p>{{ url.message.message }}</p>
+       </div>
    </div>
 </li>
 {% endmacro %}

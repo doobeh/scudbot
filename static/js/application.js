@@ -1,5 +1,13 @@
 $(document).ready(function(){
 
+  // Url Message Box:
+  // ================
+   $(".message-show").click(function () {
+      $(this).hide(0);
+      $(this).next(".message-text").show(0);
+   });
+
+
   // Google code prettify
   // ====================
 
