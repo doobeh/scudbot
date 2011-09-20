@@ -40,7 +40,9 @@
    <div class="content">
        <a href="javascript:;" title="Show original message" class="message-show"><img src="{{ url_for('static', filename='img/notebook--arrow.png') }}" /></a>
      {% if url.img_cached is none %}
+       {% autoescape False %}
        <a href="{{url.url}}" target="_blank">{{url.title}}</a><br/>
+       {% endautoescape %}
      {% else %}
        <a href="{{url.url}}" target="_blank">{{url.url}}</a><br/>
      {% endif %}
