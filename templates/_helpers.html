@@ -45,9 +45,14 @@
        <a href="{{url.url}}" target="_blank">{{url.url}}</a><br/>
      {% endif %}
        <div class="message-text">
-           <table>
+           <ol class="msg-group">
            {% for m in url.conversation %}
-           <tr><td>{{ m.user.nick }}</td><td>{{ m.message }}</td></tr>
+             {% if url.message == m %}
+           <li class="msg-group-selection">{{m.date_created.strftime('%H:%M')}} &lt;{{ m.user.nick }}&gt; {{ m.message }}</li>
+             {% else %}
+           <li class="msg-group-item">{{m.date_created.strftime('%H:%M')}} &lt;{{ m.user.nick }}&gt; {{ m.message }}</li>
+             {% endif %}
+           
            {% endfor %}
            </table>
        </div>
