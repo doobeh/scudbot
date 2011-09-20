@@ -46,15 +46,15 @@
   						{% set date = url.date_created.date() %}
   					{% endif %}
 
-				{% if loop.index is divisibleby 2 %}
+					{% if loop.index is divisibleby 2 %}
 				<li class="url-group-item ">
-				{% else %}
+					{% else %}
 				<li class="url-group-item alt_background">
-				{% endif %}
+					{% endif %}
            				{{ url_box(url) }}
            		</li>
       			{% endfor %}
-      			{% if date is defined %}
+      			{% if urls.count() > 0 %}
       		</ol>
       			{% endif %}
 	  		{% else %}
