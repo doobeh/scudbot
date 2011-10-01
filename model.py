@@ -102,6 +102,7 @@ class Message(Base):
     is_action = Column(Boolean())
     urls = relationship("Url", backref="message", lazy="dynamic")
     date_created = Column(DateTime, default=datetime.now())
+    private = Column(Boolean, default=False)
 
     def __init__(self,user,network_channel,message,is_action=False):
         self.user = user
@@ -150,6 +151,10 @@ class Url(Base):
     def __repr__(self):
         return "<URL: %s>" % (self.url)
 
+    @property
+    def is_private(self):
+        return self.message.private
+    
     @property
     def conversation(self):
         m = self.message_id

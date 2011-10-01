@@ -42,7 +42,10 @@ class ScudBot(irc.IRCClient):
         print "Network Channel for Message is %s" % (net_channel,)
 
         # return the message
-        return Message(u,net_channel,msg,is_action)
+        message = Message(u,net_channel,msg,is_action)
+        if "[wip]" in message.message:
+            message.private = True
+        return message
 
     def privmsg(self, user, channel, msg):
         # Bot is talking to himself?
