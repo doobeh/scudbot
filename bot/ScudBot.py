@@ -21,7 +21,11 @@ class ScudBot(irc.IRCClient):
             self.join(chan)
 
     def joined(self, channel):
-        print "Joined %s." % (channel,)
+        for netChan in self.factory.bot.network_channels:
+            if(channel == netChan.channel.name):
+                print "Joined %s." % (channel,)
+                return
+        self.leave(channel)
 
     def process_message(self,user,channel,msg,is_action=False):
         # Drop the hostname part of username:
