@@ -1,69 +1,175 @@
-from model import Network, Channel, Bot, NetworkChannel, User, Message, Url, Admin
-# Import the different database modules
-from scud import app
-from database import db_session as db, engine
-from model import *
+from ModelManager import ModelManager
 
-engine.echo = False
+manager = ModelManager()
 
-# Create some networks:
-qnet = Network('uk.quakenet.org',6667)
-fnode = Network('irc.freenode.com',6667)
+def usage(args):
+    print("")
+    print("Commands:")
+    print("help: Prints this message")
+    print("list: Prints what's inside the database")
+    print("add:  Adds a Bot witwh a Network")
+    print("edit: Edits a Bot")
+    print("quit: quits the program")
+    print("")
 
-# Some Channels
-fuk = Channel('#fortress.uk')
-ea = Channel('#fortress.uk.ea')
-fscud = Channel('#fortress.uk.scud')
+def list(args):
+    if(args == '?'):
+        print "Lists aspects of the database."
+        print "list bot [name]: Lists the name of the bot or all the bots"
+        print "list networks: lists all the networks."
+        print "list servers: lists all the servers."
+        print "list channels: lists all the channels."
+        print "list: lists the whole database"
+        return
+    #find the occurence of the first space
+    if(args is None or len(args.strip()) == 0):
+        manager.printAll()
+    else:
+        args = args.strip().split(' ')
+        if(len(args) > 0):
+            if(args[0] == 'bot' or args[0] == 'bots'):
+                if(len(args) == 2):
+                    manager.printBot(args[1])
+                else:
+                    manager.printBot()
+            elif(args[0] == 'networks'):
+                manager.printNetworks()
+            elif(args[0] == 'servers'):
+                manager.printServers()
+            elif(args[0] == 'channels'):
+                manager.printChannels()
+            else:
+                print "Unknown list command: %s" % args[0]
+                list('?')
+        else:
+            print args
 
-# A Bot
-scud = Bot('scud',qnet)
+def add(args):
+    if(args == '?'):
+        print "Add a bot, network or channel to the database."
+        print "add bot nick network: Adds a bot to watch a given network."
+        print "add network name: Adds a network with the given name."
+        print "add server network address[:port[=SSL]]: Adds a server."
+        print "add channel name: Adds a channel with \"name\" to the channel database."
+        print "add chantobot channel bot: Adds a server."
+        return
+    else:
+        if(args is None or len(args.strip()) == 0):
+            print "No command given to add, please specify a valid command."
+            add('?')
+            return
+        args = args.strip().split(' ')
+        if(len(args) > 0):
+            if(args[0] == 'bot'):
+                if(len(args) != 3):
+                    print "Cannot add bot without the correct number of arguments."
+                    print "add bot nick network: Adds a bot to watch a given network."
+                    print "add %s" % (args)
+                    return
+                bot = manager.addOrGetBot(args[1], args[2])
+                if(bot is not None):
+                    print "Bot %s added" % bot
+                    return
+                print "Bot %s not added with network %s" % (args[1], args[2])
+            elif(args[0] == 'network'):
+                if(len(args) != 2):
+                    print "Cannot add network without the correct number of arguments."
+                    print "add network name: Adds a network with the given name."
+                    print "add %s" % (args)
+                    return
+                network = manager.addOrGetNetwork(args[1])
+                if(network is not None):
+                    print "Network %s added" % network
+                    return
+                print "Network %s not added" % args[1]
+            elif(args[0] == 'channel'):
+                if(len(args) != 2):
+                    print "Cannot add channel without the correct number of arguments."
+                    print "add channel name: Adds a channel with \"name\" to the channel database."
+                    print "add %s" % (args)
+                    return
+                channel = manager.addOrGetChannel(args[1])
+                if(channel is not None):
+                    print "Channel %s added" % channel
+                    return
+                print "Channel %s not added" % args[1]
+            elif(args[0] == 'server'):
+                if(len(args) != 3):
+                    print "Cannot add server without the correct number of arguments."
+                    print "add server network address[:port[=SSL]]: Adds a server."
+                    print "add %s" % (args)
+                    return
+                #Split out the second argument to address, port, SSL
+                #User regexp to do this eventually
+                network_name = args[1]
+                args = args[2].strip().split(':')
+                if(len(args) > 1):
+                    address = args[0]
+                    args = args[1].strip().split('=')
+                    if(len(args) == 2):
+                        port = args[0]
+                        SSL = True
+                    else:
+                        port = args[1]
+                        SSL = False
+                else:
+                    address = args[0]
+                    port = None
+                    SSL = False
+                #Get rid of the above ugly code and replace with Regexp
+                
+                server = manager.addOrGetServer(network_name, address, port, SSL)
+                if(server is not None):
+                    print "Server %s added" % server
+                    return
+                print "Server %s not added" % args[1]
+            elif(args[0] == 'chantobot'):
+                if(len(args) != 3):
+                    print "Cannot add channel to bot without the correct number of arguments."
+                    print "add chantobot channel bot: Adds a server."
+                    print "add %s" % (args)
+                    return
+                manager.addChannelToBot(args[1], args[2])
+            else:
+                print "Unknown add command: %s" % args[0]
+                add('?')
+        else:
+            print args
+            
 
-# Create an active 'botchannel'
-qnet_fuk = NetworkChannel(fuk,qnet) # Scud monitors fortress.uk on QuakeNet.
-qnet_ea = NetworkChannel(ea,qnet) # Scud monitors fortress.uk.ea on Quakenet.
-qnet_scud = NetworkChannel(fscud,qnet) # Scud monitors fortress.uk.ea on Quakenet.
-fnode_fuk = NetworkChannel(fuk,fnode) # Scud monitors fortress.uk on FreeNode.
+#List of all the functions that can be used
+function_map = {'help' : usage,
+                'list' : list,
+                'add'  : add,
+                'quit' : quit}
 
-#Add Qnet FUK as a network channel for Scud
-scud.network_channels.add(qnet_fuk)
+while True:
+    func_name = raw_input("Command:")
+    args = None
+    first_space = func_name.find(' ')
+    if(first_space > 0):
+        args = func_name[first_space+1:]
+        func_name = func_name[0:first_space]
+    function = function_map.get(func_name, None)
+    if function is None:
+        print "Unknown command %s" % func_name
+        usage(args)
+    else:
+        function(args)
+'''
+name = raw_input("Enter bot name:")
+server = raw_input("Enter server address:")
+port = int(raw_input("Enter server port:"))
 
-db.add_all([qnet,fnode,fuk,ea,scud,qnet_fuk,qnet_ea,fnode_fuk])  # add them all to database.
-db.commit()
+print "Starting creation of %s, on %s:%d" % (name, server, port)
+bot = manager.addOrGetBot(name, server, port)
+if(bot is None):
+    print "Bot was not created"
+    quit()
+channel = raw_input("Add a channel:")
+manager.addChannel(bot, channel)
+manager.commit()
 
-#Add the qnet_ea as a NetworkChannel for Scud
-scud.network_channels.add(qnet_ea)
-db.commit()
-
-#Create a second bot
-scud2 = Bot('scud2',qnet)
-#Reassign the QuakeNet Fortress.UK channel to the second  bot
-scud2.network_channels.add(qnet_fuk)
-#Add and commit the second bot
-db.add(scud2)
-db.commit()
-
-b = Bot.query.filter(Bot.nick=='scud').first()
-b.network_channels.add(qnet_scud)
-db.commit()
-
-#At this point we have
-#Scud - QNet - #fortress.uk.ea
-#Scud - QNet - #fortress.uk.scud
-scud = Bot.query.filter(Bot.nick=='scud').first()
-print "%s on %s" % (scud.nick, scud.network.server)
-for netChan in scud.network_channels:
-    print netChan.channel.name
-#Scud2 - QNet - #fortress.uk
-scud = Bot.query.filter(Bot.nick=='scud2').first()
-print "%s on %s" % (scud.nick, scud.network.server)
-for netChan in scud.network_channels:
-    if isinstance(netChan.channel.name, unicode):
-        print "Chan is unicode"
-    if isinstance(netChan.channel.name, str):
-        print "Chan is ascii"
-    print netChan.channel.name
-    
-admin = Admin("PintSizedCat")
-db.add(admin)
-db.commit()
+manager.printDB()
+'''
 quit()

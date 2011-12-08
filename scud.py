@@ -102,14 +102,15 @@ def permanent(id):
 @app.route("/channel/<int:channel>/", defaults={'page':1})
 @app.route("/channel/<int:channel>/page/<int:page>")
 def channel_log(channel,page):
+    rows = Url.query.filter(network_channel_id=channel).order_by(Url.date_created.desc())
     rows = Message.query.filter_by(network_channel_id=channel).order_by(Message.id.desc())
     totalRows = rows.count()
     c = rows.limit(settings.PER_PAGE).offset((page-1)*settings.PER_PAGE)
     if not c.count() and page != 1:
         flash('No results found on requested page... forwarding you here.')
-        return redirect(url_for('channel_log',channel=channel))
+        return redirect(url_for('urls',channel=channel))
     pagination = Pagination(page, settings.PER_PAGE, totalRows)
-    return render_template('log.html',messages=c,pagination=pagination)
+    return render_template('urls.html',urls=c,pagination=pagination)
 
 # Pagination Related
 def url_for_other_page(page):

@@ -19,68 +19,71 @@ class ASCII(TypeDecorator):
 
 class Network(Base):
     __tablename__ = 'network'
-    id = Column(Integer, primary_key=True)
-    server = Column(String(100))
-    port = Column(Integer())
-    network_channels = relationship("NetworkChannel", backref="network", lazy="dynamic")
+    name = Column(String(100), primary_key=True)
+    servers = relationship("Server", backref="network", lazy="dynamic")
     
-    def __init__(self,server,port=6667):
-        self.port = port
-        self.server = server
+    def __init__(self,name):
+        self.name = name
         
     def __repr__(self):
-        return '<%s:%s>' % (self.server,self.port)
+        return '%s' % (self.name)
+
+class Server(Base):
+    __tablename__ = 'server'
+    network_name = Column(String(100), ForeignKey('network.name'))
+    address = Column(String(100), primary_key=True)
+    port = Column(Integer())
+    isSSL = Column(Boolean(), default=False)
     
+    
+    def __init__(self,network_name,address,port=6667,isSSL=False):
+        self.network_name = network_name
+        self.port = 6667 if port == None else port
+        self.address = address
+        self.isSSL = isSSL
+        
+    def __repr__(self):
+        if(self.isSSL):
+            return '%s: SSL %s:%d' % (self.network_name, self.address,self.port)
+        else:
+            return '%s: TCP %s:%d' % (self.network_name, self.address,self.port)
 
 class Channel(Base):
     __tablename__ = 'channel'
-    id = Column(Integer, primary_key=True)
-    name = Column(ASCII(100))
+    name = Column(ASCII(100), primary_key=True)
 
     def __init__(self,name):
         self.name = name
         
     def __repr__(self):
-        return '<Channel: %s>' % (self.name,)
-    
+        return self.name
+
+#Bot to Channel association because one bot can have many 
+#channels and a channel can be looked over by many bots.
+bot_to_channel = Table('bot_channel', Base.metadata,
+                                Column('bot_nick', ASCII(100), ForeignKey('bot.nick')),
+                                Column('channel_id', ASCII(100), ForeignKey('channel.name'))
+                                )    
 class Bot(Base):
     __tablename__ = 'bot'
-    id = Column(Integer, primary_key=True)
-    network_id = Column(Integer, ForeignKey('network.id'))
-    network = relationship("Network", lazy="joined")
-    network_channels = relationship("NetworkChannel", backref="bot", lazy="joined", collection_class=set)
-    nick = Column(ASCII(100))
+    nick = Column(ASCII(100), primary_key=True)
     active = Column(Boolean(), default=True)
     
-    def __init__(self,nick,network):
+    #Network Server Relationship
+    network_name = Column(String(100), ForeignKey('network.name'), primary_key=True)
+    network = relationship("Network", lazy="joined")
+    
+    #Channel Relationship
+    channels = relationship("Channel", secondary=bot_to_channel, backref="bots", lazy="joined", collection_class=set)
+    
+    def __init__(self,nick,network_name):
         self.nick = nick
-        self.network = network
+        self.network_name = network_name
         
     def __repr__(self):
-        return '<Bot %s on %s>' % (self.nick,self.network)
+        return '%s on %s' % (self.nick,self.network)
 
-class NetworkChannel(Base):
-    __tablename__ = 'networkchannel'
-    id = Column(Integer, primary_key=True)
-    bot_id = Column(Integer, ForeignKey('bot.id'))
-
-    network_id = Column(Integer, ForeignKey('network.id'))
-    channel = relationship("Channel")
-    channel_id = Column(Integer, ForeignKey('channel.id'))
-    messages = relationship("Message", backref="network_channel", lazy="dynamic")
-    active = Column(Boolean())
-    password = Column(String())
-    notes = Column(Text())
-    
-    def __init__(self,channel,network,password=None,active=True):
-        self.channel = channel
-        self.network = network
-        self.password = password
-    
-    def __repr__(self):
-        return '<%s on %s>' % (self.channel.name, self.network)
-    
-
+'''
 class User(Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
@@ -92,7 +95,7 @@ class User(Base):
         
     def __repr__(self):
         return self.nick
-    
+
 class Message(Base):
     __tablename__ = 'message'
     id = Column(Integer, primary_key=True)
@@ -114,7 +117,6 @@ class Message(Base):
         return "%s" % (self.message)
     
 class Url(Base):
-    ''' Logs Links '''
     __tablename__ = 'url'
     id = Column(Integer, primary_key=True)
     url = Column(Text)
@@ -141,7 +143,7 @@ class Url(Base):
         before = Message.query.filter_by(network_channel = nc).filter(Message.id < self.message_id).order_by(Message.id.desc()).limit(2)
         after = Message.query.filter_by(network_channel = nc).filter(Message.id > self.message_id).order_by(Message.id.asc()).limit(2)
         return list(before) + [self.message] + list(after)
-
+'''
 class Admin(Base, UserMixin):
     __tablename__ = 'admin'
     id = Column(Integer, primary_key=True)
