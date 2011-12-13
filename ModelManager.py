@@ -159,3 +159,24 @@ class ModelManager:
         bot.channels.add(channel)
         #commit
         self.commit()
+        
+    def delNetwork(self, network_name):
+        network = Network.query.filter(Network.name == network_name).first()
+        if network is None:
+            return
+        #If we found the network then there might be bots that use it
+        bots = Bot.query.filter(Bot.network_name == network_name).all()
+        if(len(bots) > 0):
+            print "Found bots that reference the network:"
+            for bot in bots:
+                print bot.nick
+            func_name = raw_input("Delete network and bots? [Y/n]")
+            if(func_name != "Y" and func_name != "y"):
+                print "Aborting deletion of %s" % network_name
+                return
+            for bot in bots:
+                print "Deleting %s" % bot.nick
+                db.delete(bot)
+        db.delete(network)
+        print "Committing deletion of %s" % network_name
+        self.commit()

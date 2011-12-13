@@ -44,6 +44,32 @@ def list(args):
         else:
             print args
 
+def delete(args):
+    if(args == '?'):
+        print "Delete a bot, network, server or channel from the database."
+        print "del bot nick network: Deletes a bot."
+        print "del network name: Deletes a network."
+        print "del server network address[:port[=SSL]]: Adds a server."
+        print "del channel name: Adds a channel with \"name\" to the channel database."
+        print "del chantobot channel bot: Adds a server."
+        return
+    else:
+        if(args is None or len(args.strip()) == 0):
+            print "No command given to add, please specify a valid command."
+            add('?')
+            return
+        args = args.strip().split(' ')
+        if(len(args) > 0):
+            if(args[0] == 'network'):#
+                if(len(args) != 2):
+                    print "Cannot delete network without the correct number of arguments."
+                    print "del network name: Deletes a network."
+                    print "del %s" % (args)
+                    return
+                manager.delNetwork(args[1])
+                return
+        return
+        
 def add(args):
     if(args == '?'):
         print "Add a bot, network or channel to the database."
@@ -141,6 +167,7 @@ def add(args):
 function_map = {'help' : usage,
                 'list' : list,
                 'add'  : add,
+                'del'  : delete,
                 'quit' : quit}
 
 while True:
@@ -156,20 +183,4 @@ while True:
         usage(args)
     else:
         function(args)
-'''
-name = raw_input("Enter bot name:")
-server = raw_input("Enter server address:")
-port = int(raw_input("Enter server port:"))
-
-print "Starting creation of %s, on %s:%d" % (name, server, port)
-bot = manager.addOrGetBot(name, server, port)
-if(bot is None):
-    print "Bot was not created"
-    quit()
-channel = raw_input("Add a channel:")
-manager.addChannel(bot, channel)
-manager.commit()
-
-manager.printDB()
-'''
 quit()
