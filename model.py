@@ -116,7 +116,7 @@ class Message(Base):
         
     def __repr__(self):
         return "%s" % (self.message)
-
+'''
 def check_existing(context):
     ''' Checks database to see if url link has been mentioned before.
 
@@ -131,7 +131,7 @@ def check_existing(context):
     if item:
         return item.id
     return None
-
+'''
 class Url(Base):
     __tablename__ = 'url'
     id = Column(Integer, primary_key=True)
