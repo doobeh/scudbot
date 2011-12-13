@@ -20,3 +20,6 @@ the webapp at http://127.0.0.1:5000
 
 ## Other Notes
 
+Want to use the following for messages in a channel
+http://www.humblesoftware.com/finance/documentation
+

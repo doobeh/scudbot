@@ -105,6 +105,7 @@ class Message(Base):
     is_action = Column(Boolean())
     urls = relationship("Url", backref="message", lazy="dynamic")
     date_created = Column(DateTime, default=datetime.now())
+    private = Column(Boolean, default=False)
 
     def __init__(self,user,network_channel,message,is_action=False):
         self.user = user
@@ -115,7 +116,22 @@ class Message(Base):
         
     def __repr__(self):
         return "%s" % (self.message)
-    
+
+def check_existing(context):
+    ''' Checks database to see if url link has been mentioned before.
+
+        When a Url object is created, this function checks the existing
+        database to see if the link has been mentioned before, if it
+        has, it returns the 'original' Url id, which is stored against
+        the new Url.
+        
+    '''
+
+    item = Url.query.filter_by(url=context.current_parameters['url']).filter(Url.original_id == None).first()
+    if item:
+        return item.id
+    return None
+
 class Url(Base):
     __tablename__ = 'url'
     id = Column(Integer, primary_key=True)
@@ -128,14 +144,19 @@ class Url(Base):
     img_thumb  = Column(Text)
     message_id = Column(Integer, ForeignKey(Message.id))
     date_created = Column(DateTime, default=datetime.now())
+    original_id = Column(Integer, ForeignKey("url.id"), default=check_existing)
 
     def __init__(self, url):
         self.url = url
         self.date_created = datetime.now()
-        
-    def __repr__(self):
-        return "<URL: %s>" % (self.url)    
 
+    def __repr__(self):
+        return "<URL: %s>" % (self.url)
+
+    @property
+    def is_private(self):
+        return self.message.private
+    
     @property
     def conversation(self):
         m = self.message_id

@@ -44,7 +44,14 @@ def login():
 @app.route("/admin")
 @login_required
 def admin():
-    return render_template('admin.html')
+    #Bot
+    bots = Bot.query.all()
+    #Network
+    #nworks = Network.query.all()
+    #Network Channel
+    #Channel
+    #User
+    return render_template('admin.html', bots=bots)
 
 @app.route("/logout")
 @login_required

@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block extra_style %}
+	<link rel="stylesheet/less" href="/static/less/admin.less">
+{% endblock %}
 {% block title %}Images{% endblock %}
 {% block nav_images %}active{% endblock %}
 
@@ -13,6 +16,31 @@
       <!-- Show any logged messages -->
       <div class="row">
       	<div class="span16">
+      		{% if bots %}
+      			{% for bot in bots %}
+      				{% if  bot.active %}
+      					<span class="green_font label">
+      					{{ bot.nick }}
+      				{% else %}
+      					<span class="red_font label">
+      					{{ bot.nick }}
+      				{% endif %}
+      				</span>
+      				</br>
+      				- {{ bot.network.server }} {{ bot.network.port }}
+      				{% for netchan in bot.network_channels %}
+      					</br>--<input class="span3" id="" name="" type="text" value="{{ netchan.channel.name }}" />
+      					pwd:<input class="span3" id="" name="" type="text" value="{{ netchan.channel.password }}" />
+      					</br>notes: <textarea class="span6" id="" name="" type="text" rows="3">{{ netchan.channel.notes }}</textarea> 
+      				{% endfor %}
+      				</br></br>Add Channel
+      				</br>Name:  Active:  password: </br> notes </br></br>
+      			{% endfor %}
+      		{% endif %}
+      		Add Bot</br>
+      		Nick: Active:</br>
+      		Server: Port:
+      		
       	</div>      	
       </div>
 

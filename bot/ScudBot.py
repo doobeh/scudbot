@@ -21,7 +21,11 @@ class ScudBot(irc.IRCClient):
             self.join(chan)
 
     def joined(self, channel):
-        print "Joined %s." % (channel,)
+        for netChan in self.factory.bot.network_channels:
+            if(channel == netChan.channel.name):
+                print "Joined %s." % (channel,)
+                return
+        self.leave(channel)
 
     def process_message(self,user,channel,msg,is_action=False):
         # Drop the hostname part of username:
@@ -42,7 +46,10 @@ class ScudBot(irc.IRCClient):
         print "Network Channel for Message is %s" % (net_channel,)
 
         # return the message
-        return Message(u,net_channel,msg,is_action)
+        message = Message(u,net_channel,msg,is_action)
+        if "[wip]" in message.message:
+            message.private = True
+        return message
 
     def privmsg(self, user, channel, msg):
         # Bot is talking to himself?
