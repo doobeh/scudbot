@@ -1,5 +1,5 @@
-from ModelManager import ModelManager
-
+from model import ModelManager
+import argparse
 manager = ModelManager()
 
 def usage(args):

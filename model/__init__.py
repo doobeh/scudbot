@@ -1,0 +1,2 @@
+import model_manager
+ModelManager = model_manager.ModelManager

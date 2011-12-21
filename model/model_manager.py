@@ -1,7 +1,6 @@
-from model import Network, Server, Channel, Bot, Admin#, User, Message, Url
+#from model import Network, Server, Channel, Bot, Admin#, User, Message, Url
 # Import the different database modules
-from scud import app
-from database import db_session as db, engine
+from bot import Network, Server, Channel, Bot, db, engine
 from sqlalchemy.exc import IntegrityError
 
 engine.echo = False
@@ -80,12 +79,13 @@ class ModelManager:
             return False
         else:
             return True
-
+    
+    '''
     def addAdmin(self, name):
         admin = Admin(name)
         db.add(admin)
-        return self.commit()
-    
+        return self.commit()'''
+           
     def addOrGetBot(self, nick, network_name=None):
         if network_name is not None:
             network = Network.query.filter(Network.name == network_name).first()
@@ -118,7 +118,7 @@ class ModelManager:
             if not self.commit():
                 return None
             print "Network %s added" % network_name
-        if(len(port.strip()) == 0):
+        if(port is None or len(port.strip()) == 0):
             port = None
         else:
             port = int(port)
