@@ -2,6 +2,7 @@
 # Import the different database modules
 from bot import Network, Server, Channel, Bot, db, engine
 from sqlalchemy.exc import IntegrityError
+from ModelException import ModelException
 
 engine.echo = False
 
@@ -70,15 +71,16 @@ class ModelManager:
     def commit(self):
         try:
             db.commit()
+            return True
         except IntegrityError as (statement):
-            db.rollback()
+            #Write out error
             print "IntegrityError \"{0}\" for {1}".format(statement.orig, statement.params)
+            #Rollback
+            db.rollback()
+            #Raise new Exception
             if(statement.connection_invalidated):
                 print "Program error, connection invalidated to Database, quitting"
-                quit()
             return False
-        else:
-            return True
     
     '''
     def addAdmin(self, name):
@@ -86,38 +88,30 @@ class ModelManager:
         db.add(admin)
         return self.commit()'''
            
-    def addOrGetBot(self, nick, network_name=None):
-        if network_name is not None:
-            network = Network.query.filter(Network.name == network_name).first()
-            if network is not None:
-                bot = Bot.query.filter(Bot.nick == nick).filter(Bot.network == network).first()
-                if bot is not None:
-                    return bot
-            else:
-                network = Network(network_name)
-                db.add(network)
-                if not self.commit():
-                    return None
-                
-            bot = Bot(nick, network_name)
-            db.add(bot)
-            if self.commit():
-                return bot
-        return None
+    def addBot(self, nick, network_name):
+        if network_name is None or len(network_name.strip()) == 0:
+            raise ModelException("Network required when adding a bot.")
+        
+        network = self.addNetwork(network_name)
+        
+        bot = Bot.query.filter(Bot.nick == nick).filter(Bot.network == network).first()
+        if bot is not None:
+            return bot
+            
+        bot = Bot(nick, network_name)
+        db.add(bot)
+        if not self.commit():
+            raise ModelException("Error during commit of Bot "+ nick +" for network " + network_name)
+        return bot
     
-    def addOrGetServer(self, network_name, address, port=None, SSL=False):
+    def addServer(self, network_name, address, port=None, SSL=False):
         server = Server.query.filter(Server.address == address).first()
         if(server is not None):
             return server
         
         #Make sure the network exists
-        network = Network.query.filter(Network.name == network_name).first()
-        if network is None:
-            network = Network(network_name)
-            db.add(network)
-            if not self.commit():
-                return None
-            print "Network %s added" % network_name
+        network = self.addNetwork(network_name)
+        
         if(port is None or len(port.strip()) == 0):
             port = None
         else:
@@ -125,32 +119,32 @@ class ModelManager:
         server = Server(network_name, address, port, SSL)
         db.add(server)
         if self.commit():
-            return server
-        return None
+            raise ModelException("Problem committing server " + server)
+        return server
     
-    def addOrGetNetwork(self, network_name):
+    def addNetwork(self, network_name):
         network = Network.query.filter(Network.name == network_name).first()
         if network is not None:
             return network
         network = Network(network_name)
         db.add(network)
-        if self.commit():
-            return network
+        if not self.commit():
+            raise ModelException("Problem committing network " + network_name)
+        return network
         
-    def addOrGetChannel(self, name):
+    def addChannel(self, name):
         channel = Channel.query.filter(Channel.name == name).first()
         if channel is not None:
             return channel
         channel = Channel(name)
         db.add(channel)
-        if self.commit():
-            return channel
+        if not self.commit():
+            raise ModelException("Problem committing channel " +name)
+        return channel
         
-    def addChannelToBot(self, channel_name, bot_name):
-        #get the channel
-        channel = Channel.query.filter(Channel.name == channel_name).first()
-        if channel is None:
-            return
+    def addBotChannel(self, channel_name, bot_name):
+        #add/get the channel
+        channel = self.addChannel(channel_name)
         #get the bot
         bot = Bot.query.filter(Bot.nick == bot_name).first()
         if bot is None:

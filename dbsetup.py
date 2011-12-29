@@ -92,7 +92,7 @@ def add(args):
                     print "add bot nick network: Adds a bot to watch a given network."
                     print "add %s" % (args)
                     return
-                bot = manager.addOrGetBot(args[1], args[2])
+                bot = manager.addBot(args[1], args[2])
                 if(bot is not None):
                     print "Bot %s added" % bot
                     return
@@ -103,7 +103,7 @@ def add(args):
                     print "add network name: Adds a network with the given name."
                     print "add %s" % (args)
                     return
-                network = manager.addOrGetNetwork(args[1])
+                network = manager.addNetwork(args[1])
                 if(network is not None):
                     print "Network %s added" % network
                     return
@@ -114,7 +114,7 @@ def add(args):
                     print "add channel name: Adds a channel with \"name\" to the channel database."
                     print "add %s" % (args)
                     return
-                channel = manager.addOrGetChannel(args[1])
+                channel = manager.addChannel(args[1])
                 if(channel is not None):
                     print "Channel %s added" % channel
                     return
@@ -144,7 +144,7 @@ def add(args):
                     SSL = False
                 #Get rid of the above ugly code and replace with Regexp
                 
-                server = manager.addOrGetServer(network_name, address, port, SSL)
+                server = manager.addServer(network_name, address, port, SSL)
                 if(server is not None):
                     print "Server %s added" % server
                     return
@@ -155,7 +155,7 @@ def add(args):
                     print "add chantobot channel bot: Adds a server."
                     print "add %s" % (args)
                     return
-                manager.addChannelToBot(args[1], args[2])
+                manager.addBotChannel(args[1], args[2])
             else:
                 print "Unknown add command: %s" % args[0]
                 add('?')
