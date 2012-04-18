@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, flash, url_for, request, abo
 from flaskext.login import LoginManager, login_user, login_required, fresh_login_required, logout_user
 from forms.LoginForm import LoginForm
 from database import db_session, init_db
-from model import *
+from model.web import *
 from random import choice
 from jinja2.utils import generate_lorem_ipsum
 from math import ceil
