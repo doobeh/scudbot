@@ -82,12 +82,7 @@ class ModelManager:
                 print "Program error, connection invalidated to Database, quitting"
             return False
     
-    '''
-    def addAdmin(self, name):
-        admin = Admin(name)
-        db.add(admin)
-        return self.commit()'''
-           
+    #Add Methods
     def addBot(self, nick, network_name):
         if network_name is None or len(network_name.strip()) == 0:
             raise ModelException("Network required when adding a bot.")
@@ -119,6 +114,7 @@ class ModelManager:
         server = Server(network_name, address, port, SSL)
         db.add(server)
         if self.commit():
+            #TODO work out how to print out the server here using the toString shit
             raise ModelException("Problem committing server " + server)
         return server
     
@@ -139,7 +135,7 @@ class ModelManager:
         channel = Channel(name)
         db.add(channel)
         if not self.commit():
-            raise ModelException("Problem committing channel " +name)
+            raise ModelException("Problem committing channel " + name)
         return channel
         
     def addBotChannel(self, channel_name, bot_name):
@@ -153,7 +149,16 @@ class ModelManager:
         bot.channels.add(channel)
         #commit
         self.commit()
-        
+    
+    #Delete methods   
+    def delBot(self, nick, network_name):
+        bot = Bot.query.filter(Bot.nick == nick).filter(Bot.network == network).first()
+        if bot is None:
+            return
+        db.delete(bot)
+        print "Committing deletion of %s, %s" % (nick, network_name)
+        self.commit()
+         
     def delNetwork(self, network_name):
         network = Network.query.filter(Network.name == network_name).first()
         if network is None:
@@ -173,4 +178,19 @@ class ModelManager:
                 db.delete(bot)
         db.delete(network)
         print "Committing deletion of %s" % network_name
+        self.commit()
+        
+    def delChannel(self, channel_name):
+        #add/get the channel
+        channel = Channel.query.filter(Channel.name == channel_name).first()
+        if channel is None:
+            print "Unable to find channel: %s" % channel_name
+            return
+        #get the bots that reference the channel
+        if(len(channel.bots) > 0):
+            print "Found bots that reference the channel:"
+            for bot in channel.bots:
+                print bot.nick
+        db.delete(channel)
+        #commit
         self.commit()

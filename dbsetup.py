@@ -7,7 +7,8 @@ def usage(args):
     print("Commands:")
     print("help: Prints this message")
     print("list: Prints what's inside the database")
-    print("add:  Adds a Bot witwh a Network")
+    print("add:  Adds a Bot with a Network")
+    print("del:  Deletes a Bot, Network, Channel, Server")
     print("edit: Edits a Bot")
     print("quit: quits the program")
     print("")
@@ -55,11 +56,19 @@ def delete(args):
         return
     else:
         if(args is None or len(args.strip()) == 0):
-            print "No command given to add, please specify a valid command."
-            add('?')
+            print "No command given to del, please specify a valid command."
+            delete('?')
             return
         args = args.strip().split(' ')
         if(len(args) > 0):
+            if(args[0] == 'bot'):#
+                if(len(args) != 3):
+                    print "Cannot delete bot without the correct number of arguments."
+                    print "del bot nick network: Deletes a bot."
+                    print "del %s" % (args)
+                    return
+                manager.delNetwork(args[1], args[2])
+                return
             if(args[0] == 'network'):#
                 if(len(args) != 2):
                     print "Cannot delete network without the correct number of arguments."
@@ -67,6 +76,14 @@ def delete(args):
                     print "del %s" % (args)
                     return
                 manager.delNetwork(args[1])
+                return
+            if(args[0] == 'channel'):#
+                if(len(args) != 2):
+                    print "Cannot delete channel without the correct number of arguments."
+                    print "del channel name: Adds a channel with \"name\" to the channel database."
+                    print "del %s" % (args)
+                    return
+                manager.delChannel(args[1])
                 return
         return
         
@@ -77,7 +94,7 @@ def add(args):
         print "add network name: Adds a network with the given name."
         print "add server network address[:port[=SSL]]: Adds a server."
         print "add channel name: Adds a channel with \"name\" to the channel database."
-        print "add chantobot channel bot: Adds a server."
+        print "add chantobot channel bot: Adds a channel to a bot."
         return
     else:
         if(args is None or len(args.strip()) == 0):
@@ -136,7 +153,7 @@ def add(args):
                         port = args[0]
                         SSL = True
                     else:
-                        port = args[1]
+                        port = args[0]
                         SSL = False
                 else:
                     address = args[0]
@@ -152,7 +169,7 @@ def add(args):
             elif(args[0] == 'chantobot'):
                 if(len(args) != 3):
                     print "Cannot add channel to bot without the correct number of arguments."
-                    print "add chantobot channel bot: Adds a server."
+                    print "add chantobot channel bot: Adds a channel to a bot."
                     print "add %s" % (args)
                     return
                 manager.addBotChannel(args[1], args[2])
