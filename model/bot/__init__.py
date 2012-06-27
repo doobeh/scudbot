@@ -14,6 +14,12 @@ Network = network.Network
 import bot
 Bot = bot.Bot
 
+import user
+User = user.User
+
+import message
+Message = message.Message
+
 '''
 import url
 Url = url.Url
