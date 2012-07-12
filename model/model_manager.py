@@ -1,13 +1,14 @@
 #from model import Network, Server, Channel, Bot, Admin#, User, Message, Url
 # Import the different database modules
-from bot import Network, Server, Channel, Bot, db, engine
+from bot import Network, Server, Channel, Bot, db, engine, database, ModelException
 from sqlalchemy.exc import IntegrityError
-from ModelException import ModelException
 
 engine.echo = False
 
 class ModelManager:
     
+    def init_db(self):
+        database.init_db()
     #PRINT METHODS
     #Print out the database
     def printAll(self):
@@ -115,7 +116,7 @@ class ModelManager:
         db.add(server)
         if self.commit():
             #TODO work out how to print out the server here using the toString shit
-            raise ModelException("Problem committing server " + server)
+            raise ModelException("Problem committing server " + str(server))
         return server
     
     def addNetwork(self, network_name):
