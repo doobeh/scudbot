@@ -10,3 +10,6 @@ class ModelException(Exception):
     def __init__(self, msg, expr = None):
         self.msg = msg
         self.expr = expr
+
+    def __str__(self):
+        return repr(self.msg)

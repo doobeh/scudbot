@@ -20,6 +20,9 @@ User = user.User
 import message
 Message = message.Message
 
+import ModelException
+ModelException = ModelException.ModelException
+
 '''
 import url
 Url = url.Url
