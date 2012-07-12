@@ -188,6 +188,7 @@ function_map = {'help' : usage,
                 'quit' : quit}
 
 while True:
+    manager.init_db()
     func_name = raw_input("Command:")
     args = None
     first_space = func_name.find(' ')
