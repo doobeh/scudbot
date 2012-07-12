@@ -3,6 +3,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.exc import IntegrityError
 
 if os.getenv('TEST') == 'yes':
     engine = create_engine('sqlite:///test.db', convert_unicode=True, echo=False)
@@ -20,6 +21,20 @@ def init_db():
     # you will have to import them first before calling init_db()
     import model
     Base.metadata.create_all(bind=engine)
+    
+def commit():
+    try:
+        db_session.commit()
+        return True
+    except IntegrityError as (statement):
+        #Write out error
+        print "IntegrityError \"{0}\" for {1}".format(statement.orig, statement.params)
+        #Rollback
+        db_session.rollback()
+        #Raise new Exception
+        if(statement.connection_invalidated):
+            print "Program error, connection invalidated to Database, quitting"
+        return False
 
 ##Helper for the model stuff
 from sqlalchemy import String
