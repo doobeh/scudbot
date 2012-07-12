@@ -15,7 +15,7 @@ class Server(Base):
         self.address = address
         self.isSSL = isSSL
         
-    def __repr__(self):
+    def __str__(self):
         if(self.isSSL):
             return '%s: SSL %s:%d' % (self.network_name, self.address,self.port)
         else:
