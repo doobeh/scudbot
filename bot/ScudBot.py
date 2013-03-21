@@ -15,14 +15,14 @@ class ScudBot(irc.IRCClient):
         print "Signed on as %s." % (self.factory.bot.nick,)
         for netChan in self.factory.bot.network_channels:
             chan = netChan.channel.name
-            print "Joining %s" % (chan)
+            print "Joining %s" % chan
             if isinstance(chan, unicode):
                 print "Channel is Unicode"
             self.join(chan)
 
     def joined(self, channel):
         for netChan in self.factory.bot.network_channels:
-            if(channel == netChan.channel.name):
+            if channel == netChan.channel.name:
                 print "Joined %s." % (channel,)
                 return
         self.leave(channel)

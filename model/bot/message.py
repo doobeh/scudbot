@@ -5,7 +5,7 @@ from datetime import datetime
 
 class Message(Base):
     __tablename__ = 'message'
-    id = Column(Integer, primary_key=True)
+    mid = Column(Integer, primary_key=True)
     network_name = Column(String(100), ForeignKey('network.name'))
     user_id = Column(Integer, ForeignKey('user.id'))
     message = Column(Text())
@@ -22,4 +22,4 @@ class Message(Base):
         self.date_created = datetime.now()
 
     def __repr__(self):
-        return "%s" % (self.message)
+        return "%s" % self.message

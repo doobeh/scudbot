@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String
 
 class User(Base):
     __tablename__ = 'user'
-    id = Column(Integer, primary_key=True)
+    uid = Column(Integer, primary_key=True)
     nick = Column(String(100))
 #    messages = relationship("Message", backref="user", lazy="dynamic")
 
