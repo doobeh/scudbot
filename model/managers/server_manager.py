@@ -1,18 +1,18 @@
 from model.bot import Bot, Server, db, database, engine, database, ModelException
 
 class ServerManager:
-    
+
     def __init__(self, networkManager):
         self.networkManager = networkManager
-        
+
     def add(self, network_name, address, port=None, SSL=False):
         server = Server.query.filter(Server.address == address).first()
         if(server is not None):
             return server
-        
+
         #Make sure the network exists
         network = self.networkManager.add(network_name)
-        
+
         if(port is None or len(port.strip()) == 0):
             port = None
         else:
@@ -30,7 +30,7 @@ class ServerManager:
         db.delete(server)
         print "Committing deletion of %s, %s" % (address)
         database.commit()
-        
+
     def clean(self):
         servers = Server.query.filter(Server.network == None).all()
         for server in servers:

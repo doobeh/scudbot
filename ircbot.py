@@ -6,7 +6,7 @@ if __name__ == "__main__":
     for bot in Bot.query.all():
         print "[%s] Trying to connect to network %s" % (bot.nick, bot.network.name)
         if(len(bot.network.servers) <= 0):
-            print "[%s] Unable to connect to network %s with no servers." % (bot.nick, bot.network.name) 
+            print "[%s] Unable to connect to network %s with no servers." % (bot.nick, bot.network.name)
             continue
         else:
             print "[%s] Connecting to %s:%s" % (bot.nick, bot.network.server, bot.network.port)

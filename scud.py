@@ -138,22 +138,22 @@ def dataload():
     names = ('alice','bob','clive','dave','enid','frank','george')
     hosts = ('b33f.net','google.com','brah.com')
     channels = ('fortress.uk.scud','fortress.uk.ea')
-    
+
     for i in range(1000):
-        name = choice(names)         
+        name = choice(names)
         user = '%s!~%s@%s' % (name,name,choice(hosts),) # Format a irc 'user/host'
         m = Message(user, choice(channels), generate_lorem_ipsum(1,html=False,min=5,max=25))
         db_session.add(m)
     db_session.commit()
-        
+
     # Create admins:
     admins = ('WeiGonChi!~seph@miaows.eu','doobeh!~quassel@b33f.net')
     [db_session.add(Admin(u)) for u in admins]
     db_session.commit()
-    
+
     flash("Data loaded")
     return redirect(url_for('index'))
-    
+
 
 #@app.teardown_request
 #def shutdown_session(exception=None):

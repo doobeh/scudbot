@@ -30,7 +30,7 @@ class ScudBot(irc.IRCClient):
     def process_message(self,user,channel,msg,is_action=False):
         # Drop the hostname part of username:
         user = user.split('!')[0]
-        
+
         # Does the user exist?
         u = User.query.filter_by(nick=user).first()
         if u is None:
@@ -80,8 +80,8 @@ class ScudBot(irc.IRCClient):
         db_session.add(m)
         print "Added action %s %s" % (m,m.is_action)
         db_session.commit()
-       
- 
+
+
 class ScudBotFactory(protocol.ClientFactory):
     protocol = ScudBot
 

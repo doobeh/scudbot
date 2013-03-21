@@ -1,4 +1,4 @@
-from model.bot import Network, Server, Channel, Bot, db, engine, database
+from model.bot import database
 
 import network_manager
 NetworkManager = network_manager.NetworkManager()

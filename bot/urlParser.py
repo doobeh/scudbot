@@ -48,12 +48,12 @@ def parse(message):
 def process(result):
     if result is None:
         return "No regexp match"
-    
+
     link = NoneAsEmpty(result[0])
     #If the link is None, return None
     if link is None:
         return "No link in message"
-    
+
     ltype = NoneAsEmpty(result[1])
     uname = NoneAsEmpty(result[2])
     domain = NoneAsEmpty(result[3])
@@ -65,27 +65,27 @@ def process(result):
     except (ValueError, TypeError):
         port = None
     pathres = NoneAsEmpty(result[7])
-    
+
     #validate the TLD including if the TLD is actually real
     variable = TLD()
     istld = variable.Validate(ptld)
     if(not istld):
         #the tld isn't valid, return non
         return "Invalid TLD %s" % ptld
-    
+
     #Is there a www at any point
     valwww = link.find('www') > -1
-    
+
     #Determine if the domain of the type xx.yy yy is the tld
     valdomain = re.search("\w+.\w+$",domain)
-    
+
     #try and find the type of file it is text/plain etc
     gftype = mimetypes.guess_type(link)[0]
-    
+
     #Determine if an ip is present
     isip = not (ip is None)
-    
-    
+
+
     #If there's no ltype (ftp:// http:// etc)
     if ltype is None:
         #If there's no tld, ip, port, www but there is a mime type then it's a file
@@ -102,13 +102,13 @@ def process(result):
         elif not isip and port is None and not valwww:
             #Unknown format, return null
             ltype = "Unknown"
-    
+
     if (((valdomain and istld) or isip) and (ltype == 'http' or ltype == 'https' or (ltype is None and valwww) or ltype == 'dcon')):
             #Look at using http://www.crummy.com/software/BeautifulSoup/
         try:
             #Save the proper url for later use
             tlink = link
-    
+
             #If the url doesn't start with http://, make it so
             if(link.find('http://') == -1 and link.find('https://') == -1):
                 link = 'https://' + link
@@ -117,28 +117,28 @@ def process(result):
             page = urllib2.urlopen(link)
             content_type = None
             content_len  = None
-    
+
             #Get the content-type and content-length headers
-            for header in page.info().headers: 
-                if header[:header.find(':')].lower() == 'content-type': 
+            for header in page.info().headers:
+                if header[:header.find(':')].lower() == 'content-type':
                     content_type = header[header.find(':')+1:].strip()
-    
-            if content_type is None:        
+
+            if content_type is None:
                 #If there is no type it's malformed
                 return "No Content Type"
-    
+
             if(re.search("text|(?:application.*xml)",content_type,re.I)):
                 #Read the page and get the title
                 pagedata = page.read()
                 title = re.search("(?<=<title>).*(?=</title>)",pagedata.translate(None,"\t\n\r"), re.IGNORECASE)
-    
+
                 #Get the title
                 dtitle = title.group(0)
 
                 #Strip non valid characters and white spaces greater than 2 long
                 dtitle = re.sub('[^\[\]\w\s,._\-\/\\}{&;]+', '', dtitle)
                 dtitle = re.sub('/\s{2,}', '', dtitle);
-    
+
                 #If the title still has content use it, otherwise, use the url
                 title = dtitle if len(dtitle) != 0 else turl;
                 url = Url(link)
@@ -148,7 +148,6 @@ def process(result):
                 url.file_type = gftype
                 url.img_cached = None
                 url.img_thumb = None
-                return url
             elif(re.search("image\/",content_type, re.I)):
                 type_index = content_type.rfind('/')
                 ftype = content_type[type_index+1:]
@@ -164,13 +163,13 @@ def process(result):
                     fcached = genfname+'.'+ftype
                     dst = settings.THUMB_DIR+fthumb
                     src = settings.IMAGE_DIR+fcached
-    
+
                 # Open our local file for writing
                 local_file = open(src, "w")
                 #Write to our local file
                 local_file.write(page.read())
                 local_file.close()
-    
+
                 img = Image.open(src)
                 img.thumbnail((128, 102), Image.ANTIALIAS)
                 img.save(dst)

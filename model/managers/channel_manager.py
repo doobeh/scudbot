@@ -1,7 +1,7 @@
 from model.bot import Channel, db, engine, database, ModelException
 
 class ChannelManager():
-    
+
     def add(self, name):
         channel = Channel.query.filter(Channel.name == name).first()
         if channel is not None:
@@ -11,7 +11,7 @@ class ChannelManager():
         if not database.commit():
             raise ModelException("Problem committing channel " + name)
         return channel
-    
+
     def delete(self, name):
         #add/get the channel
         channel = Channel.query.filter(Channel.name == channel_name).first()
@@ -26,7 +26,7 @@ class ChannelManager():
         db.delete(channel)
         #commit
         database.commit()
-    
+
     def output(self):
         for channel in Channel.query.all():
             print channel

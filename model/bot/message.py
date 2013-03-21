@@ -20,6 +20,6 @@ class Message(Base):
         self.network = network
         self.is_action = is_action
         self.date_created = datetime.now()
-        
+
     def __repr__(self):
         return "%s" % (self.message)

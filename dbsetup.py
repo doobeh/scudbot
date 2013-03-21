@@ -1,8 +1,7 @@
 from model import ModelManager
-import argparse
 manager = ModelManager()
 
-def usage(args):
+def usage():
     print("")
     print("Commands:")
     print("help: Prints this message")
@@ -86,7 +85,7 @@ def delete(args):
                 manager.delChannel(args[1])
                 return
         return
-        
+
 def add(args):
     if(args == '?'):
         print "Add a bot, network or channel to the database."
@@ -160,7 +159,7 @@ def add(args):
                     port = None
                     SSL = False
                 #Get rid of the above ugly code and replace with Regexp
-                
+
                 server = manager.addServer(network_name, address, port, SSL)
                 if(server is not None):
                     print "Server %s added" % server
@@ -178,7 +177,7 @@ def add(args):
                 add('?')
         else:
             print args
-            
+
 
 #List of all the functions that can be used
 function_map = {'help' : usage,

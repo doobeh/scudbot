@@ -6,7 +6,6 @@ serverManager = ServerManager
 channelManager = ChannelManager
 
 init_db()
-
 botManager.add("scud", "0xff")
 botManager.output("scud")
 
@@ -21,12 +20,14 @@ botManager.addChannel("scud", "#scud.test")
 serverManager.add("0xff", "irc.0xff.com", "6697", True)
 botManager.output("scud")
 serverManager.output()
+print "networks"
+print networkManager
 
-networkManager.delete("0xff")
+#networkManager.delete("0xff", True)
 print "bots"
 botManager.output()
 print "networks"
-networkManager.output()
+print networkManager
 print "servers"
 serverManager.output()
 print "channels"
