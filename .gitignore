@@ -1,7 +1,5 @@
 *.class
 *.pyc
 *.pyo
-.project
-.pydevproject
 data.db
 idea/
