@@ -6,7 +6,9 @@
 * Flask-SQLAlchemy
 
 ## TODO
-* Fix the formatting on urls so it looks nicer
+* Add webpage back
+* Add URLs to the database model
+* Fix the bot to use the new database model
 
 ## Basic Operation:
 Scudbot is divided into two programs, ircbot.py, which launches IRC clients to monitor public messages in channels of
