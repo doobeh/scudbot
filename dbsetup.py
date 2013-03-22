@@ -1,6 +1,11 @@
 from model import ModelManager
 manager = ModelManager()
 
+
+#TODO Add Users
+#TODO Add Messages
+#TODO Add URLs
+#TODO Add Edit
 def usage():
     print("")
     print("Commands:")
@@ -12,6 +17,7 @@ def usage():
     print("quit: quits the program")
     print("")
 
+
 def list_database(args):
     if args == '?':
         print "Lists aspects of the database."
@@ -19,6 +25,7 @@ def list_database(args):
         print "list networks: lists all the networks."
         print "list servers: lists all the servers."
         print "list channels: lists all the channels."
+        print "list users: lists all the users."
         print "list: lists the whole database"
         return
     #find the occurence of the first space
@@ -38,20 +45,27 @@ def list_database(args):
                 manager.printServers()
             elif args[0] == 'channels':
                 manager.printChannels()
+            elif args[0] == 'users':
+                manager.printUsers()
             else:
                 print "Unknown list command: %s" % args[0]
                 list_database('?')
         else:
             print args
 
+
+# TODO Check Del bot
+# TODO Add Del server
+# TODO Add Del chantobot
 def delete(args):
     if args == '?':
         print "Delete a bot, network, server or channel from the database."
         print "del bot nick network: Deletes a bot."
         print "del network name: Deletes a network."
-        print "del server network address[:port[=SSL]]: Adds a server."
-        print "del channel name: Adds a channel with \"name\" to the channel database."
-        print "del chantobot channel bot: Adds a server."
+        print "del server network address[:port[=SSL]]: Deletes a server."
+        print "del channel name: Deletes a channel with \"name\" from the channel database."
+        print "del chanbot channel bot network: Deletes a channel from a bot."
+        print "del user name: Deletes a user from the database."
         return
     else:
         if args is None or len(args.strip()) == 0:
@@ -60,31 +74,46 @@ def delete(args):
             return
         args = args.strip().split(' ')
         if len(args) > 0:
-            if args[0] == 'bot':#
+            if args[0] == 'bot':
                 if len(args) != 3:
                     print "Cannot delete bot without the correct number of arguments."
                     print "del bot nick network: Deletes a bot."
                     print "del %s" % args
                     return
-                manager.delNetwork(args[1], args[2])
-                return
-            if args[0] == 'network':#
+                manager.delBot(args[1], args[2])
+            elif args[0] == 'network':
                 if len(args) != 2:
                     print "Cannot delete network without the correct number of arguments."
                     print "del network name: Deletes a network."
                     print "del %s" % args
                     return
                 manager.delNetwork(args[1])
-                return
-            if args[0] == 'channel':#
+            elif args[0] == 'channel':
                 if len(args) != 2:
                     print "Cannot delete channel without the correct number of arguments."
-                    print "del channel name: Adds a channel with \"name\" to the channel database."
+                    print "del channel name: Deletes a channel with \"name\" from the channel database."
                     print "del %s" % args
                     return
                 manager.delChannel(args[1])
-                return
+            elif args[0] == 'chanbot':
+                if len(args) != 4:
+                    print "Cannot delete a channel from a bot without the correct number of arguments."
+                    print "del chanbot channel bot network: Deletes a channel from a bot."
+                    print "del %s" % args
+                    return
+                manager.delChannelBot(args[1], args[2], args[3])
+            elif args[0] == 'user':
+                if len(args) != 2:
+                    print "Cannot delete a user without the correct number of arguments."
+                    print "del user name: Adds a user with \"name\" from the user database."
+                    print "del %s" % args
+                    return
+                manager.delUser(args[1])
+            else:
+                print "Invalid command, please specify a valid command."
+                delete('?')
         return
+
 
 def add(args):
     if args == '?':
@@ -93,7 +122,8 @@ def add(args):
         print "add network name: Adds a network with the given name."
         print "add server network address[:port[=SSL]]: Adds a server."
         print "add channel name: Adds a channel with \"name\" to the channel database."
-        print "add chantobot channel bot: Adds a channel to a bot."
+        print "add chanbot channel bot network: Adds a channel to a bot."
+        print "add user nick: Adds a user to the database."
         return
     else:
         if args is None or len(args.strip()) == 0:
@@ -165,13 +195,24 @@ def add(args):
                     print "Server %s added" % server
                     return
                 print "Server %s not added" % args[1]
-            elif args[0] == 'chantobot':
-                if len(args) != 3:
+            elif args[0] == 'chanbot':
+                if len(args) != 4:
                     print "Cannot add channel to bot without the correct number of arguments."
-                    print "add chantobot channel bot: Adds a channel to a bot."
+                    print "add chanbot channel bot network: Adds a channel to a bot."
                     print "add %s" % args
                     return
-                manager.addBotChannel(args[1], args[2])
+                manager.addChannelBot(args[1], args[2], args[3])
+            elif args[0] == 'user':
+                if len(args) != 2:
+                    print "Cannot add user without the correct number of arguments."
+                    print "add user nick: Adds a user to the database."
+                    print "add %s" % args
+                    return
+                user = manager.addUser(args[1])
+                if user is not None:
+                    print "User %s added" % user
+                    return
+                print "User %s not added" % args[1]
             else:
                 print "Unknown add command: %s" % args[0]
                 add('?')
@@ -180,11 +221,11 @@ def add(args):
 
 
 #List of all the functions that can be used
-function_map = {'help' : usage,
-                'list' : list_database,
-                'add'  : add,
-                'del'  : delete,
-                'quit' : quit}
+function_map = {'help': usage,
+                'list': list_database,
+                'add': add,
+                'del': delete,
+                'quit': quit}
 
 while True:
     manager.init_db()
@@ -192,7 +233,7 @@ while True:
     args = None
     first_space = func_name.find(' ')
     if first_space > 0:
-        args = func_name[first_space+1:]
+        args = func_name[first_space + 1:]
         func_name = func_name[0:first_space]
     function = function_map.get(func_name, None)
     if function is None:
