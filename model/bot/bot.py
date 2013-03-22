@@ -19,7 +19,7 @@ class Bot(Base):
     network = relationship("Network", lazy="joined")
 
     #Channel Relationship
-    channels = relationship("Channel", secondary=bot_to_channel, backref="bots", lazy="joined", collection_class=set)
+    channels = relationship("Channel", secondary=bot_to_channel, backref="bots", lazy="joined")
 
     def __init__(self, nick, network_name):
         self.nick = nick

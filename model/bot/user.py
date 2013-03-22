@@ -3,11 +3,10 @@ from sqlalchemy import Column, Integer, String
 
 class User(Base):
     __tablename__ = 'user'
-    uid = Column(Integer, primary_key=True)
-    nick = Column(String(100))
+    nick = Column(String(100), primary_key=True)
 #    messages = relationship("Message", backref="user", lazy="dynamic")
 
-    def __init__(self,nick):
+    def __init__(self, nick):
         self.nick = nick
 
     def __repr__(self):
