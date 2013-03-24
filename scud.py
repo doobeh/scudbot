@@ -15,7 +15,7 @@ app = Flask(__name__)
 #Create the login manager
 login_manager = LoginManager()
 #Setup the app in the login_manager
-login_manager.setup_app(app)
+login_manager.init_app(app)
 
 app.config.from_pyfile('settings')
 
