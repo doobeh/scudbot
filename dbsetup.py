@@ -2,8 +2,6 @@ from model import ModelManager
 manager = ModelManager()
 
 
-#TODO Add Users
-#TODO Add Messages
 #TODO Add URLs
 #TODO Add Edit
 def usage(args):
