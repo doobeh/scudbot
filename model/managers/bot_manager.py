@@ -33,7 +33,7 @@ class BotManager:
         if bot is None:
             return None
         #add channel to bot
-        bot.channels.add(channel)
+        bot.channels.append(channel)
         #commit
         database.commit()
 
