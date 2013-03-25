@@ -1,0 +1,5 @@
+Flask==0.9
+Flask-SQLAlchemy==0.16
+Flask-WTF==0.8.3
+Twisted==12.3.0
+Flask-Login==0.1.3

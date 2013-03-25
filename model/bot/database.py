@@ -15,12 +15,15 @@ db_session = scoped_session(sessionmaker(autocommit=False,
 Base = declarative_base()
 Base.query = db_session.query_property()
 
+
 def init_db():
     # import all modules here that might define models so that
     # they will be registered properly on the metadata.  Otherwise
     # you will have to import them first before calling init_db()
     import model
+
     Base.metadata.create_all(bind=engine)
+
 
 def commit():
     try:
@@ -32,7 +35,7 @@ def commit():
         #Rollback
         db_session.rollback()
         #Raise new Exception
-        if(statement.connection_invalidated):
+        if statement.connection_invalidated:
             print "Program error, connection invalidated to Database, quitting"
         return False
 
@@ -40,11 +43,12 @@ def commit():
 from sqlalchemy import String
 from sqlalchemy.types import TypeDecorator
 
+
 class ASCII(TypeDecorator):
-    '''
+    """
     Prefixes Unicode values with "PREFIX:" on the way in and
     strips it off on the way out.
-    '''
+    """
     impl = String
 
     def process_result_value(self, value, dialect):

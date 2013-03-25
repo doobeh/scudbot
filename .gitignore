@@ -3,3 +3,5 @@
 *.pyo
 data.db
 idea/
+.idea/
+.venv/
