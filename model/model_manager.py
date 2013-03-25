@@ -1,6 +1,6 @@
 #from model import Network, Server, Channel, Bot, Admin#, User, Message, Url
 # Import the different database modules
-from bot import User, Network, Server, Channel, Bot, db, engine, database, ModelException
+from bot import Message, User, Network, Server, Channel, Bot, db, engine, database, ModelException
 from sqlalchemy.exc import IntegrityError
 
 engine.echo = False
@@ -158,7 +158,7 @@ class ModelManager:
             #add channel to bot
         bot.channels.append(channel)
         #commit
-        print "Committing deletion of %s from %s on %s" % (channel_name, nick, network_name)
+        print "Committing add of %s to %s on %s" % (channel_name, nick, network_name)
         self.commit()
 
     def addUser(self, nick):
@@ -169,7 +169,18 @@ class ModelManager:
         db.add(user)
         if not self.commit():
             raise ModelException("Problem committing user with nick " + nick)
-        print "Committing deletion of %s" % nick
+        print "Committing add of %s" % nick
+        return user
+
+    def addMessage(self, nick, network_name, channel_name, message):
+        user = self.addUser(nick)
+        network = self.addNetwork(network_name)
+        channel = self.addChannel(channel_name)
+        message = Message(user, network, channel, message)
+        db.add(message)
+        if not self.commit():
+            raise ModelException("Problem committing message to %s by %s \n\t %s" % (network, user, message))
+        print "Committing add of %s" % message
         return user
 
     #Delete methods   
@@ -178,7 +189,7 @@ class ModelManager:
         if bot is None:
             return
         db.delete(bot)
-        print "Committing deletion of %s, %s" % (nick, network_name)
+        print "Committing add of %s, %s" % (nick, network_name)
         self.commit()
 
     def delNetwork(self, network_name):

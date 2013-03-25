@@ -6,7 +6,7 @@ manager = ModelManager()
 #TODO Add Messages
 #TODO Add URLs
 #TODO Add Edit
-def usage():
+def usage(args):
     print("")
     print("Commands:")
     print("help: Prints this message")
@@ -124,6 +124,7 @@ def add(args):
         print "add channel name: Adds a channel with \"name\" to the channel database."
         print "add chanbot channel bot network: Adds a channel to a bot."
         print "add user nick: Adds a user to the database."
+        print "add msg nick network message: Adds a message to the database for a user."
         return
     else:
         if args is None or len(args.strip()) == 0:
@@ -213,6 +214,17 @@ def add(args):
                     print "User %s added" % user
                     return
                 print "User %s not added" % args[1]
+            elif args[0] == 'msg':
+                if len(args) < 4:
+                    print "Cannot add message without the correct number of arguments."
+                    print "add msg nick network message: Adds a message to the database for a user."
+                    print "add %s" % args
+                    return
+                user = manager.addMessage(args[1], args[2], args[3], " ".join(args[4:]))
+                if user is not None:
+                    print "User %s added" % user
+                    return
+                print "User %s not added" % args[1]
             else:
                 print "Unknown add command: %s" % args[0]
                 add('?')
@@ -238,7 +250,7 @@ while True:
     function = function_map.get(func_name, None)
     if function is None:
         print "Unknown command %s" % func_name
-        usage()
+        usage('')
     else:
         function(args)
 quit()
