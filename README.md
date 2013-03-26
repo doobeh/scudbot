@@ -7,7 +7,7 @@
 
 ## TODO
 * Add webpage back
-* Add URLs to the database model
+* Fix all references so they use IDs and backreferences correctly
 * Fix the bot to use the new database model
 
 ## Basic Operation:

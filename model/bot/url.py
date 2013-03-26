@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship, backref
 from datetime import datetime
 
 
+#TODO Cleanup
 def check_existing(context):
     ''' Checks database to see if url link has been mentioned before.
 
@@ -20,7 +21,6 @@ def check_existing(context):
     return None
 
 
-#TODO make work
 class Url(Base):
     __tablename__ = 'url'
     id = Column(Integer, primary_key=True)
