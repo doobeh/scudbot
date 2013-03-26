@@ -13,7 +13,7 @@ class Message(Base):
     channel_id = Column(String(100), ForeignKey('channel.name'))
     message = Column(Text())
     is_action = Column(Boolean())
-#    urls = relationship("Url", backref="message", lazy="dynamic")
+    urls = relationship("Url", backref="message", lazy="dynamic")
     date_created = Column(DateTime, default=datetime.now())
     private = Column(Boolean, default=False)
 
@@ -21,9 +21,9 @@ class Message(Base):
         self.user = user
         self.message = message
         self.network = network
-        self.challen = channel
+        self.channel = channel
         self.is_action = is_action
         self.date_created = datetime.now()
 
     def __repr__(self):
-        return "[%s] %d:%s" % (self.date_created, self.mid, self.message)
+        return "[%s@%s] %d:%s" % (self.date_created, self.channel.name, self.mid, self.message)

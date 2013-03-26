@@ -24,6 +24,7 @@ def list_database(args):
         print "list servers: lists all the servers."
         print "list channels: lists all the channels."
         print "list users: lists all the users."
+        print "list msg: lists all the messages."
         print "list: lists the whole database"
         return
     #find the occurence of the first space
@@ -45,6 +46,8 @@ def list_database(args):
                 manager.printChannels()
             elif args[0] == 'users':
                 manager.printUsers()
+            elif args[0] == 'msg':
+                manager.printMessages()
             else:
                 print "Unknown list command: %s" % args[0]
                 list_database('?')
@@ -123,6 +126,7 @@ def add(args):
         print "add chanbot channel bot network: Adds a channel to a bot."
         print "add user nick: Adds a user to the database."
         print "add msg nick network message: Adds a message to the database for a user."
+        print "add url message_id url: Adds a URL to the database."
         return
     else:
         if args is None or len(args.strip()) == 0:
@@ -218,11 +222,22 @@ def add(args):
                     print "add msg nick network message: Adds a message to the database for a user."
                     print "add %s" % args
                     return
-                user = manager.addMessage(args[1], args[2], args[3], " ".join(args[4:]))
-                if user is not None:
-                    print "User %s added" % user
+                msg = manager.addMessage(args[1], args[2], args[3], " ".join(args[4:]))
+                if msg is not None:
+                    print "Message %s added" % msg
                     return
-                print "User %s not added" % args[1]
+                print "Message %s not added" % args[1]
+            elif args[0] == 'url':
+                if len(args) < 3:
+                    print "Cannot add url without the correct number of arguments."
+                    print "add url message_id url: Adds a URL to the database."
+                    print "add %s" % args
+                    return
+                url = manager.addURL(args[1], args[2])
+                if url is not None:
+                    print "URL %s added" % url
+                    return
+                print "URL %s not added" % args[1]
             else:
                 print "Unknown add command: %s" % args[0]
                 add('?')

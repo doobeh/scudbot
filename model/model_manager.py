@@ -1,6 +1,6 @@
 #from model import Network, Server, Channel, Bot, Admin#, User, Message, Url
 # Import the different database modules
-from bot import Message, User, Network, Server, Channel, Bot, db, engine, database, ModelException
+from bot import Message, User, Network, Server, Channel, Bot, Url, db, engine, database, ModelException
 from sqlalchemy.exc import IntegrityError
 
 engine.echo = False
@@ -17,6 +17,8 @@ class ModelManager:
         self.printBot()
         print "Users:"
         self.printUsers()
+        print "Urls:"
+        self.printUrls()
         print "Finished Printing"
 
     def printBot(self, name=None):
@@ -67,6 +69,22 @@ class ModelManager:
     def printUsers(self):
         for user in User.query.all():
             print user
+        print ""
+        #This seems like a hack to make sure we don't store any
+        #references in memory which get used, modified later on
+        db.commit()
+
+    def printMessages(self):
+        for msg in Message.query.all():
+            print msg
+        print ""
+        #This seems like a hack to make sure we don't store any
+        #references in memory which get used, modified later on
+        db.commit()
+
+    def printUrls(self):
+        for url in Url.query.all():
+            print url
         print ""
         #This seems like a hack to make sure we don't store any
         #references in memory which get used, modified later on
@@ -182,6 +200,18 @@ class ModelManager:
             raise ModelException("Problem committing message to %s by %s \n\t %s" % (network, user, message))
         print "Committing add of %s" % message
         return user
+
+    def addURL(self, message_id, url):
+        message = Message.query.filter(Message.mid == int(message_id)).first()
+        if message is None:
+            print "Unable to find message with ID %d" % int(message_id)
+            return None
+        url = Url(message_id, url)
+        db.add(url)
+        if not self.commit():
+            raise ModelException("Problem committing url %s for message_id %s" % (url, message_id))
+        print "Committing add of %s" % url
+        return url
 
     #Delete methods   
     def delBot(self, nick, network_name):
